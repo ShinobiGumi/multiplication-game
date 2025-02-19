@@ -297,7 +297,7 @@ const MultiplicationGame = () => {
                 Try Another Table
               </Button>
             </motion.div>
-          )}
+           )}
         </CardContent>
       </Card>
       </div>
