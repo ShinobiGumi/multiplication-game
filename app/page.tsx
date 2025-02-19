@@ -1,15 +1,15 @@
 "use client"
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { CheckCircle2, XCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 const MultiplicationGame = () => {
   const [name, setName] = useState(() => {
-    // Load saved name from localStorage if available
     if (typeof window !== 'undefined') {
       return localStorage.getItem('playerName') || '';
     }
@@ -146,19 +146,23 @@ const MultiplicationGame = () => {
   return (
     <div style={gradientStyle} className="p-4 flex flex-col items-center min-h-screen">
       <div className="w-full max-w-md mb-6">
-        <img 
-          src="/louis.png" 
-          alt="Multiplication Game Banner" 
-          className="w-full rounded-lg shadow-lg"
-        />
+        <div className="relative w-full h-[200px]">
+          <Image 
+            src="/louis.png" 
+            alt="Multiplication Game Banner"
+            fill
+            style={{ objectFit: 'cover' }}
+            className="rounded-lg shadow-lg"
+          />
+        </div>
         <h1 className="text-3xl font-bold text-gray-800 text-center mb-8">
-          LOUIS' BADASS MULTIPLICATION GAME Y'ALL!
+          LOUIS&apos;S BADASS MULTIPLICATION GAME Y&apos;ALL!
         </h1>
       </div>
   
       <Card className="w-full max-w-md bg-white/95 backdrop-blur-sm shadow-xl">
         <CardContent className="p-6">
-          {gameState === 'welcome' ? (
+          {gameState === &aposwelcome&apos ? (
             <div className="space-y-6">
               <h1 className="text-3xl font-bold text-gray-800 text-center mb-8">
                 Multiplication Tables Adventure
@@ -296,7 +300,7 @@ const MultiplicationGame = () => {
           )}
         </CardContent>
       </Card>
-    </div>
+      </div>
   );
 };
 
