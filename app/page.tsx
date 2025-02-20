@@ -8,17 +8,26 @@ import { CheckCircle2, XCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
+interface Question {
+  num1: number;
+  num2: number;
+}
+
 const MultiplicationGame = () => {
-  const [name, setName] = useState("");
-  const [selectedTable, setSelectedTable] = useState("");
-  const [gameState, setGameState] = useState("welcome");
-  const [currentQuestion, setCurrentQuestion] = useState({ num1: 1, num2: 1 });
-  const [answer, setAnswer] = useState("");
-  const [score, setScore] = useState(0);
-  const [feedback, setFeedback] = useState({ show: false, correct: false, correctAnswer: null });
-  const [questionsPool, setQuestionsPool] = useState([]);
-  const [completedQuestions, setCompletedQuestions] = useState([]);
-  const [incorrectQuestions, setIncorrectQuestions] = useState([]);
+  const [name, setName] = useState<string>("");
+  const [selectedTable, setSelectedTable] = useState<string>("");
+  const [gameState, setGameState] = useState<"welcome" | "playing" | "complete">("welcome");
+  const [currentQuestion, setCurrentQuestion] = useState<Question>({ num1: 1, num2: 1 });
+  const [answer, setAnswer] = useState<string>("");
+  const [score, setScore] = useState<number>(0);
+  const [feedback, setFeedback] = useState<{
+    show: boolean;
+    correct: boolean;
+    correctAnswer: number | null;
+  }>({ show: false, correct: false, correctAnswer: null });
+  const [questionsPool, setQuestionsPool] = useState<number[]>([]);
+  const [completedQuestions, setCompletedQuestions] = useState<number[]>([]);
+  const [incorrectQuestions, setIncorrectQuestions] = useState<number[]>([]);
 
   // Load saved name on component mount
   useEffect(() => {
@@ -26,7 +35,7 @@ const MultiplicationGame = () => {
     if (storedName) setName(storedName);
   }, []);
 
-  const generateQuestionPool = () => Array.from({ length: 10 }, (_, i) => i + 1);
+  const generateQuestionPool = (): number[] => Array.from({ length: 10 }, (_, i) => i + 1);
 
   const generateNewQuestion = () => {
     const availableQuestions = [...questionsPool, ...incorrectQuestions];
@@ -91,7 +100,7 @@ const MultiplicationGame = () => {
     setTimeout(generateNewQuestion, 2000);
   };
 
-  const handleKeyPress = (e) => {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && answer) handleAnswerSubmit();
   };
 
