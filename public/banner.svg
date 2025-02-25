@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4facfe"/>
+      <stop offset="100%" stop-color="#00f2fe"/>
+    </linearGradient>
+    
+    <!-- Brain pattern for background -->
+    <pattern id="brainPattern" width="100" height="100" patternUnits="userSpaceOnUse" patternTransform="scale(0.2) rotate(10)">
+      <path d="M50,15 C20,15 20,50 20,50 C20,70 35,85 50,85 C65,85 80,70 80,50 C80,50 80,15 50,15 Z" fill="rgba(255,255,255,0.1)"/>
+      <path d="M50,17 C25,17 25,50 25,50 C25,67 36,80 50,80 C64,80 75,67 75,50 C75,50 75,17 50,17 Z" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="2"/>
+    </pattern>
+  </defs>
+  
+  <!-- Main background with gradient -->
+  <rect width="800" height="200" rx="15" fill="url(#bgGradient)"/>
+  
+  <!-- Brain pattern overlay -->
+  <rect width="800" height="200" rx="15" fill="url(#brainPattern)"/>
+  
+  <!-- Decorative math symbols -->
+  <g fill="rgba(255,255,255,0.2)">
+    <text x="30" y="40" font-family="Arial" font-size="36" font-weight="bold">×</text>
+    <text x="80" y="90" font-family="Arial" font-size="28" font-weight="bold">+</text>
+    <text x="140" y="60" font-family="Arial" font-size="32" font-weight="bold">=</text>
+    <text x="720" y="70" font-family="Arial" font-size="36" font-weight="bold">÷</text>
+    <text x="650" y="140" font-family="Arial" font-size="28" font-weight="bold">-</text>
+    <text x="670" y="40" font-family="Arial" font-size="32" font-weight="bold">×</text>
+  </g>
+  
+  <!-- Moving dots/neurons animation -->
+  <circle cx="40" cy="150" r="5" fill="white" opacity="0.7">
+    <animate attributeName="cx" values="40;80;120;160;200;240" dur="4s" repeatCount="indefinite"/>
+    <animate attributeName="cy" values="150;160;150;140;150;160" dur="4s" repeatCount="indefinite"/>
+  </circle>
+  
+  <circle cx="600" cy="50" r="4" fill="white" opacity="0.7">
+    <animate attributeName="cx" values="600;560;520;480;440;400" dur="5s" repeatCount="indefinite"/>
+    <animate attributeName="cy" values="50;60;50;40;50;60" dur="5s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Main text -->
+  <g>
+    <!-- Shadow effect for title -->
+    <text x="402" y="85" font-family="Arial" font-size="36" font-weight="bold" fill="rgba(0,0,0,0.2)" text-anchor="middle">MULTIPLICATION</text>
+    <text x="402" y="128" font-family="Arial" font-size="36" font-weight="bold" fill="rgba(0,0,0,0.2)" text-anchor="middle">ADVENTURE</text>
+    
+    <!-- Main title -->
+    <text x="400" y="83" font-family="Arial" font-size="36" font-weight="bold" fill="white" text-anchor="middle">MULTIPLICATION</text>
+    <text x="400" y="126" font-family="Arial" font-size="36" font-weight="bold" fill="white" text-anchor="middle">ADVENTURE</text>
+  </g>
+  
+  <!-- BrainBounce logo/branding -->
+  <g>
+    <!-- Small brain icon -->
+    <path d="M190,43 C180,43 180,55 180,55 C180,62 185,67 190,67 C195,67 200,62 200,55 C200,55 200,43 190,43 Z" fill="#FFD700"/>
+    <path d="M190,45 C182,45 182,55 182,55 C182,61 186,65 190,65 C194,65 198,61 198,55 C198,55 198,45 190,45 Z" fill="none" stroke="#FFA500" stroke-width="1.5"/>
+    
+    <!-- BrainBounce text -->
+    <text x="206" y="60" font-family="Arial" font-size="18" font-weight="bold" fill="white" alignment-baseline="middle">BrainBounce</text>
+  </g>
+  
+  <!-- Decorative pulsing circles -->
+  <circle cx="400" cy="100" r="140" fill="none" stroke="white" stroke-width="1" opacity="0.2">
+    <animate attributeName="r" values="140;150;140" dur="3s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.2;0.1;0.2" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  
+  <circle cx="400" cy="100" r="120" fill="none" stroke="white" stroke-width="1" opacity="0.2">
+    <animate attributeName="r" values="120;130;120" dur="4s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.2;0.1;0.2" dur="4s" repeatCount="indefinite"/>
+  </circle>
+</svg>

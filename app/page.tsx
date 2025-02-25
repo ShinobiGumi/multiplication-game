@@ -115,6 +115,15 @@ const MultiplicationGame = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gradient-to-br from-blue-50 to-blue-100">
       <div className="w-full max-w-md mb-6">
+        <div className="w-full max-w-4xl mb-6">
+          <Image 
+            src="/banner.svg" 
+            alt="Multiplication Adventure" 
+            width={800}
+            height={200}
+            className="rounded-lg shadow-lg" 
+          />
+        </div>
         <div className="relative w-full h-[200px]">
           <Image 
             src="/louis.png" 
@@ -124,6 +133,7 @@ const MultiplicationGame = () => {
             className="rounded-lg shadow-lg object-cover" 
           />
         </div>
+        
         <h1 className="text-3xl font-bold text-gray-800 text-center mt-4">
           LOUIS&apos;S MULTIPLICATION GAME
         </h1>
@@ -133,18 +143,18 @@ const MultiplicationGame = () => {
         <CardContent className="p-6">
           {gameState === "welcome" ? (
             <div className="space-y-6 text-center">
-              <h2 className="text-2xl font-bold">Multiplication Adventure</h2>
+              <h2 className="text-2xl font-bold text-gray-400">Multiplication Adventure</h2>
               <Input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Your Name"
-                className="text-center"
+                className="text-center text-lg bg-white text-gray-400"
               />
               <select
                 value={selectedTable}
                 onChange={(e) => setSelectedTable(e.target.value)}
-                className="w-full p-2 border rounded-md"
+                className="w-full p-2 border rounded-md text-gray-400"
               >
                 <option value="">Choose a table</option>
                 {[2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
@@ -156,7 +166,7 @@ const MultiplicationGame = () => {
               <Button 
                 onClick={handleStart} 
                 disabled={!name || !selectedTable} 
-                className="w-full"
+                className="w-full text-gray-800"
               >
                 Start
               </Button>
