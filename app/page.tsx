@@ -48,7 +48,7 @@ const MultiplicationGame = () => {
     const randomIndex = Math.floor(Math.random() * availableQuestions.length);
     const num1 = availableQuestions[randomIndex];
     
-    if (num1 && selectedTable) {
+    if (num1 !== undefined && selectedTable) {
       setCurrentQuestion({ num1, num2: parseInt(selectedTable) });
       setQuestionsPool(questionsPool.filter((n) => n !== num1));
       setIncorrectQuestions(incorrectQuestions.filter((n) => n !== num1));
@@ -66,7 +66,14 @@ const MultiplicationGame = () => {
       setIncorrectQuestions([]);
       const initialQuestions = generateQuestionPool();
       setQuestionsPool(initialQuestions);
-      generateNewQuestion();
+      
+      // Set initial question directly with selected table instead of generating
+      const randomNum = initialQuestions[Math.floor(Math.random() * initialQuestions.length)];
+      setCurrentQuestion({ 
+        num1: randomNum, 
+        num2: parseInt(selectedTable) 
+      });
+      setQuestionsPool(initialQuestions.filter(n => n !== randomNum));
     }
   };
 
@@ -114,8 +121,7 @@ const MultiplicationGame = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gradient-to-br from-blue-50 to-blue-100">
-      <div className="w-full max-w-md mb-6">
-        <div className="w-full max-w-4xl mb-6">
+        <div className="w-full max-w-2xl mb-6">
           <Image 
             src="/banner.svg" 
             alt="Multiplication Adventure" 
@@ -123,20 +129,8 @@ const MultiplicationGame = () => {
             height={200}
             className="rounded-lg shadow-lg" 
           />
-        </div>
-        <div className="relative w-full h-[200px]">
-          <Image 
-            src="/louis.png" 
-            alt="Multiplication Game" 
-            fill 
-            priority
-            className="rounded-lg shadow-lg object-cover" 
-          />
-        </div>
-        
-        <h1 className="text-3xl font-bold text-gray-800 text-center mt-4">
-          LOUIS&apos;S MULTIPLICATION GAME
-        </h1>
+        </div>      
+      <div className="w-full max-w-md mb-6">
       </div>
 
       <Card className="w-full max-w-md bg-white/95 backdrop-blur-md shadow-xl">
@@ -166,7 +160,7 @@ const MultiplicationGame = () => {
               <Button 
                 onClick={handleStart} 
                 disabled={!name || !selectedTable} 
-                className="w-full text-gray-800"
+                className="w-full text-gray-800 font-bold"
               >
                 Start
               </Button>
@@ -174,8 +168,8 @@ const MultiplicationGame = () => {
           ) : gameState === "playing" ? (
             <div className="text-center space-y-6">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold">Hi {name}!</h2>
-                <div className="text-lg">Score: {score}/10</div>
+                <h2 className="text-2xl font-bold text-gray-400">Hi {name}!</h2>
+                <div className="text-lg text-gray-400">Score: {score}/10</div>
               </div>
 
               {feedback.show && (
@@ -201,7 +195,7 @@ const MultiplicationGame = () => {
                 </motion.div>
               )}
 
-              <p className="text-4xl font-bold">
+              <p className="text-4xl font-bold text-gray-400">
                 {currentQuestion.num1} × {currentQuestion.num2} = ?
               </p>
               <Input
@@ -209,12 +203,13 @@ const MultiplicationGame = () => {
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
                 onKeyDown={handleKeyPress}
-                className="text-center text-2xl"
+                className="text-center text-2xl bg-white text-gray-400"
                 autoFocus
               />
               <Button 
                 onClick={handleAnswerSubmit} 
                 disabled={!answer}
+                className="text-gray-400"
               >
                 Check Answer
               </Button>
