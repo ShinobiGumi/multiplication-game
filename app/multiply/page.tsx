@@ -25,7 +25,6 @@ const MultiplicationGame = () => {
     correct: boolean;
     correctAnswer: number | null;
   }>({ show: false, correct: false, correctAnswer: null });
-  const [questionsPool, setQuestionsPool] = useState<number[]>([]);
   const [completedQuestions, setCompletedQuestions] = useState<number[]>([]);
   const [incorrectQuestions, setIncorrectQuestions] = useState<number[]>([]);
 
@@ -150,18 +149,18 @@ const MultiplicationGame = () => {
         <CardContent className="p-6">
           {gameState === "welcome" ? (
             <div className="space-y-6 text-center">
-              <h2 className="text-2xl font-bold text-gray-800">Multiplication Adventure</h2>
+              <h2 className="text-2xl font-bold text-gray-400">Multiplication Adventure</h2>
               <Input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Your Name"
-                className="text-center text-lg bg-white text-gray-800"
+                className="text-center text-lg bg-white text-gray-400"
               />
               <select
                 value={selectedTable}
                 onChange={(e) => setSelectedTable(e.target.value)}
-                className="w-full p-2 border rounded-md text-gray-800"
+                className="w-full p-2 border rounded-md text-gray-400"
               >
                 <option value="">Choose a table</option>
                 {[2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
@@ -173,7 +172,7 @@ const MultiplicationGame = () => {
               <Button 
                 onClick={handleStart} 
                 disabled={!name || !selectedTable} 
-                className="w-full text-gray-800 font-bold"
+                className="w-full text-gray-400 font-bold"
               >
                 Start
               </Button>
@@ -181,8 +180,8 @@ const MultiplicationGame = () => {
           ) : gameState === "playing" ? (
             <div className="text-center space-y-6">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold">Hi {name}!</h2>
-                <div className="text-lg">Score: {score}/10</div>
+                <h2 className="text-2xl font-bold text-gray-400">Hi {name}!</h2>
+                <div className="text-lg text-gray-400">Score: {score}/10</div>
               </div>
 
               {feedback.show && (
@@ -208,7 +207,7 @@ const MultiplicationGame = () => {
                 </motion.div>
               )}
 
-              <p className="text-4xl font-bold">
+              <p className="text-4xl font-bold text-gray-400">
                 {currentQuestion.num1} × {currentQuestion.num2} = ?
               </p>
               <Input
@@ -216,10 +215,11 @@ const MultiplicationGame = () => {
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
                 onKeyDown={handleKeyPress}
-                className="text-center text-2xl bg-white text-gray-800 focus:outline-none focus:ring-0 focus:border-gray-300"
+                className="text-center text-2xl bg-white text-gray-400 focus:outline-none focus:ring-0 focus:border-gray-300"
                 autoFocus
               />
               <Button 
+                className="text-1xl font-bold text-gray-400"
                 onClick={handleAnswerSubmit} 
                 disabled={!answer}
               >
