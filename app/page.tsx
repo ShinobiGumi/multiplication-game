@@ -87,7 +87,7 @@ export default function Home() {
                 className="relative w-full max-w-md"
               >
                 <Image 
-                  src="/banner.svg" 
+                  src="/banner2.svg" 
                   alt="BrainBounce" 
                   width={600}
                   height={400}
