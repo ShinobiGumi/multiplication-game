@@ -38,21 +38,35 @@ const MultiplicationGame = () => {
   const generateQuestionPool = (): number[] => Array.from({ length: 10 }, (_, i) => i + 1);
 
   const generateNewQuestion = () => {
-    const availableQuestions = [...questionsPool, ...incorrectQuestions];
-    if (availableQuestions.length === 0) {
-      if (completedQuestions.length === 10) {
-        setGameState("complete");
-        return;
-      }
+    // First check if we've completed all questions
+    if (completedQuestions.length >= 10) {
+      setGameState("complete");
+      return;
     }
+    
+    // Get questions that haven't been completed yet
+    const remainingQuestions = [...Array(10).keys()].map(i => i + 1)
+      .filter(num => !completedQuestions.includes(num));
+    
+    // If we have incorrect questions, prioritize them
+    const availableQuestions = incorrectQuestions.length > 0 
+      ? incorrectQuestions 
+      : remainingQuestions;
+    
+    if (availableQuestions.length === 0) {
+      setGameState("complete");
+      return;
+    }
+    
     const randomIndex = Math.floor(Math.random() * availableQuestions.length);
     const num1 = availableQuestions[randomIndex];
     
     if (num1 !== undefined && selectedTable) {
       setCurrentQuestion({ num1, num2: parseInt(selectedTable) });
-      setQuestionsPool(questionsPool.filter((n) => n !== num1));
+      // Remove from incorrect questions if it was there
       setIncorrectQuestions(incorrectQuestions.filter((n) => n !== num1));
     }
+    
     setAnswer("");
     setFeedback({ show: false, correct: false, correctAnswer: null });
   };
@@ -64,16 +78,14 @@ const MultiplicationGame = () => {
       setScore(0);
       setCompletedQuestions([]);
       setIncorrectQuestions([]);
-      const initialQuestions = generateQuestionPool();
-      setQuestionsPool(initialQuestions);
       
-      // Set initial question directly with selected table instead of generating
-      const randomNum = initialQuestions[Math.floor(Math.random() * initialQuestions.length)];
+      // Set initial question with selected table
+      const allNumbers = generateQuestionPool();
+      const randomNum = allNumbers[Math.floor(Math.random() * allNumbers.length)];
       setCurrentQuestion({ 
         num1: randomNum, 
         num2: parseInt(selectedTable) 
       });
-      setQuestionsPool(initialQuestions.filter(n => n !== randomNum));
     }
   };
 
@@ -93,7 +105,8 @@ const MultiplicationGame = () => {
         setCompletedQuestions(updatedCompleted);
         setScore(updatedCompleted.length);
         
-        if (updatedCompleted.length === 10) {
+        // Check if all 10 questions are answered correctly
+        if (updatedCompleted.length >= 10) {
           setTimeout(() => setGameState("complete"), 1500);
           return;
         }
@@ -137,18 +150,18 @@ const MultiplicationGame = () => {
         <CardContent className="p-6">
           {gameState === "welcome" ? (
             <div className="space-y-6 text-center">
-              <h2 className="text-2xl font-bold text-gray-400">Multiplication Adventure</h2>
+              <h2 className="text-2xl font-bold text-gray-800">Multiplication Adventure</h2>
               <Input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Your Name"
-                className="text-center text-lg bg-white text-gray-400"
+                className="text-center text-lg bg-white text-gray-800"
               />
               <select
                 value={selectedTable}
                 onChange={(e) => setSelectedTable(e.target.value)}
-                className="w-full p-2 border rounded-md text-gray-400"
+                className="w-full p-2 border rounded-md text-gray-800"
               >
                 <option value="">Choose a table</option>
                 {[2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
@@ -168,8 +181,8 @@ const MultiplicationGame = () => {
           ) : gameState === "playing" ? (
             <div className="text-center space-y-6">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold text-gray-400">Hi {name}!</h2>
-                <div className="text-lg text-gray-400">Score: {score}/10</div>
+                <h2 className="text-2xl font-bold">Hi {name}!</h2>
+                <div className="text-lg">Score: {score}/10</div>
               </div>
 
               {feedback.show && (
@@ -195,7 +208,7 @@ const MultiplicationGame = () => {
                 </motion.div>
               )}
 
-              <p className="text-4xl font-bold text-gray-400">
+              <p className="text-4xl font-bold">
                 {currentQuestion.num1} × {currentQuestion.num2} = ?
               </p>
               <Input
@@ -203,13 +216,12 @@ const MultiplicationGame = () => {
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
                 onKeyDown={handleKeyPress}
-                className="text-center text-2xl bg-white text-gray-400"
+                className="text-center text-2xl bg-white text-gray-800 focus:outline-none focus:ring-0 focus:border-gray-300"
                 autoFocus
               />
               <Button 
                 onClick={handleAnswerSubmit} 
                 disabled={!answer}
-                className="text-gray-400"
               >
                 Check Answer
               </Button>

@@ -1,248 +1,164 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, XCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
+import { BookOpen, Calculator, Newspaper, Sparkles, LucideCode } from "lucide-react";
 
-interface Question {
-  num1: number;
-  num2: number;
-}
-
-const MultiplicationGame = () => {
-  const [name, setName] = useState<string>("");
-  const [selectedTable, setSelectedTable] = useState<string>("");
-  const [gameState, setGameState] = useState<"welcome" | "playing" | "complete">("welcome");
-  const [currentQuestion, setCurrentQuestion] = useState<Question>({ num1: 1, num2: 1 });
-  const [answer, setAnswer] = useState<string>("");
-  const [score, setScore] = useState<number>(0);
-  const [feedback, setFeedback] = useState<{
-    show: boolean;
-    correct: boolean;
-    correctAnswer: number | null;
-  }>({ show: false, correct: false, correctAnswer: null });
-  const [questionsPool, setQuestionsPool] = useState<number[]>([]);
-  const [completedQuestions, setCompletedQuestions] = useState<number[]>([]);
-  const [incorrectQuestions, setIncorrectQuestions] = useState<number[]>([]);
-
-  // Load saved name on component mount
-  useEffect(() => {
-    const storedName = localStorage.getItem("playerName");
-    if (storedName) setName(storedName);
-  }, []);
-
-  const generateQuestionPool = (): number[] => Array.from({ length: 10 }, (_, i) => i + 1);
-
-  const generateNewQuestion = () => {
-    const availableQuestions = [...questionsPool, ...incorrectQuestions];
-    if (availableQuestions.length === 0) {
-      if (completedQuestions.length === 10) {
-        setGameState("complete");
-        return;
-      }
+export default function Home() {
+  const activities = [
+    {
+      title: "Multiplication Tables",
+      description: "Master multiplication tables with a fun interactive game",
+      icon: <Calculator className="h-10 w-10 text-blue-500" />,
+      color: "from-blue-50 to-blue-100",
+      href: "/multiply",
+      available: true
+    },
+    {
+      title: "Blog",
+      description: "Explore educational articles and learning tips",
+      icon: <Newspaper className="h-10 w-10 text-purple-500" />,
+      color: "from-purple-50 to-purple-100",
+      href: "/blog",
+      available: false
+    },
+    {
+      title: "Reading Activities",
+      description: "Improve reading skills through engaging exercises",
+      icon: <BookOpen className="h-10 w-10 text-green-500" />,
+      color: "from-green-50 to-green-100",
+      href: "/reading",
+      available: false
+    },
+    {
+      title: "Coding for Kids",
+      description: "Introduction to coding concepts through visual blocks",
+      icon: <LucideCode className="h-10 w-10 text-amber-500" />,
+      color: "from-amber-50 to-amber-100",
+      href: "/coding",
+      available: false
     }
-    const randomIndex = Math.floor(Math.random() * availableQuestions.length);
-    const num1 = availableQuestions[randomIndex];
-    
-    if (num1 !== undefined && selectedTable) {
-      setCurrentQuestion({ num1, num2: parseInt(selectedTable) });
-      setQuestionsPool(questionsPool.filter((n) => n !== num1));
-      setIncorrectQuestions(incorrectQuestions.filter((n) => n !== num1));
-    }
-    setAnswer("");
-    setFeedback({ show: false, correct: false, correctAnswer: null });
-  };
-
-  const handleStart = () => {
-    if (name && selectedTable) {
-      localStorage.setItem("playerName", name);
-      setGameState("playing");
-      setScore(0);
-      setCompletedQuestions([]);
-      setIncorrectQuestions([]);
-      const initialQuestions = generateQuestionPool();
-      setQuestionsPool(initialQuestions);
-      
-      // Set initial question directly with selected table instead of generating
-      const randomNum = initialQuestions[Math.floor(Math.random() * initialQuestions.length)];
-      setCurrentQuestion({ 
-        num1: randomNum, 
-        num2: parseInt(selectedTable) 
-      });
-      setQuestionsPool(initialQuestions.filter(n => n !== randomNum));
-    }
-  };
-
-  const handleAnswerSubmit = () => {
-    const correctAnswer = currentQuestion.num1 * currentQuestion.num2;
-    const isCorrect = parseInt(answer) === correctAnswer;
-    
-    setFeedback({ 
-      show: true, 
-      correct: isCorrect, 
-      correctAnswer: isCorrect ? null : correctAnswer 
-    });
-    
-    if (isCorrect) {
-      if (!completedQuestions.includes(currentQuestion.num1)) {
-        const updatedCompleted = [...completedQuestions, currentQuestion.num1];
-        setCompletedQuestions(updatedCompleted);
-        setScore(updatedCompleted.length);
-        
-        if (updatedCompleted.length === 10) {
-          setTimeout(() => setGameState("complete"), 1500);
-          return;
-        }
-      }
-    } else {
-      if (!incorrectQuestions.includes(currentQuestion.num1)) {
-        setIncorrectQuestions([...incorrectQuestions, currentQuestion.num1]);
-      }
-    }
-    
-    setTimeout(generateNewQuestion, 2000);
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && answer) handleAnswerSubmit();
-  };
-
-  const handleRestart = () => {
-    setGameState("welcome");
-    setSelectedTable("");
-    setScore(0);
-    setCompletedQuestions([]);
-    setIncorrectQuestions([]);
-  };
-
+  ];
+  
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gradient-to-br from-blue-50 to-blue-100">
-        <div className="w-full max-w-2xl mb-6">
-          <Image 
-            src="/banner.svg" 
-            alt="Multiplication Adventure" 
-            width={800}
-            height={200}
-            className="rounded-lg shadow-lg" 
-          />
-        </div>      
-      <div className="w-full max-w-md mb-6">
-      </div>
-
-      <Card className="w-full max-w-md bg-white/95 backdrop-blur-md shadow-xl">
-        <CardContent className="p-6">
-          {gameState === "welcome" ? (
-            <div className="space-y-6 text-center">
-              <h2 className="text-2xl font-bold text-gray-400">Multiplication Adventure</h2>
-              <Input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Your Name"
-                className="text-center text-lg bg-white text-gray-400"
-              />
-              <select
-                value={selectedTable}
-                onChange={(e) => setSelectedTable(e.target.value)}
-                className="w-full p-2 border rounded-md text-gray-400"
+    <div className="flex flex-col items-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      {/* Hero Section */}
+      <div className="w-full bg-white py-8 shadow-sm">
+        <div className="container mx-auto max-w-6xl px-4">
+          <div className="flex flex-col md:flex-row items-center justify-between">
+            <div className="w-full md:w-1/2 space-y-6 mb-8 md:mb-0">
+              <motion.h1 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="text-4xl md:text-5xl font-bold text-gray-800"
               >
-                <option value="">Choose a table</option>
-                {[2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
-                  <option key={num} value={num}>
-                    {num} times table
-                  </option>
-                ))}
-              </select>
-              <Button 
-                onClick={handleStart} 
-                disabled={!name || !selectedTable} 
-                className="w-full text-gray-800 font-bold"
+                BrainBounce
+              </motion.h1>
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="text-xl text-gray-600"
               >
-                Start
-              </Button>
-            </div>
-          ) : gameState === "playing" ? (
-            <div className="text-center space-y-6">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold text-gray-400">Hi {name}!</h2>
-                <div className="text-lg text-gray-400">Score: {score}/10</div>
-              </div>
-
-              {feedback.show && (
-                <motion.div
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  className="my-4"
-                >
-                  {feedback.correct ? (
-                    <div className="flex items-center justify-center text-green-500 text-2xl">
-                      <CheckCircle2 className="mr-2" />
-                      Correct!
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center justify-center text-red-500">
-                      <div className="flex items-center text-2xl mb-2">
-                        <XCircle className="mr-2" />
-                        Try again!
-                      </div>
-                      <div>The correct answer is {feedback.correctAnswer}</div>
-                    </div>
-                  )}
-                </motion.div>
-              )}
-
-              <p className="text-4xl font-bold text-gray-400">
-                {currentQuestion.num1} × {currentQuestion.num2} = ?
-              </p>
-              <Input
-                type="number"
-                value={answer}
-                onChange={(e) => setAnswer(e.target.value)}
-                onKeyDown={handleKeyPress}
-                className="text-center text-2xl bg-white text-gray-400"
-                autoFocus
-              />
-              <Button 
-                onClick={handleAnswerSubmit} 
-                disabled={!answer}
-                className="text-gray-400"
+                Fun, interactive learning activities to help children develop essential skills
+              </motion.p>
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
               >
-                Check Answer
-              </Button>
-            </div>
-          ) : (
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="text-center space-y-6"
-            >
-              <motion.div
-                animate={{
-                  rotate: [0, 10, -10, 10, 0],
-                  scale: [1, 1.2, 1, 1.2, 1]
-                }}
-                transition={{ duration: 1, repeat: 2 }}
-              >
-                <h2 className="text-3xl font-bold text-green-500">
-                  🎉 Well Done, {name}! 🎉
-                </h2>
+                <Link href="/multiply">
+                  <Button className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-xl text-lg">
+                    Start Learning
+                  </Button>
+                </Link>
               </motion.div>
-              <p className="text-xl">
-                You&apos;ve mastered the {selectedTable} times table!
-              </p>
-              <Button onClick={handleRestart}>
-                Play Again
-              </Button>
+            </div>
+            <div className="w-full md:w-1/2 flex justify-center">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+                className="relative w-full max-w-md"
+              >
+                <Image 
+                  src="/banner.svg" 
+                  alt="BrainBounce" 
+                  width={600}
+                  height={400}
+                  className="rounded-xl shadow-xl" 
+                />
+              </motion.div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Activities Section */}
+      <div className="container mx-auto max-w-6xl px-4 py-16">
+        <div className="text-center mb-12">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center justify-center mb-4"
+          >
+            <Sparkles className="h-6 w-6 text-amber-500 mr-2" />
+            <h2 className="text-3xl font-bold text-gray-800">Learning Activities</h2>
+          </motion.div>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Discover our range of educational activities designed to make learning engaging and effective
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+          {activities.map((activity, index) => (
+            <motion.div
+              key={activity.title}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+            >
+              <Card className="h-full overflow-hidden transition-all hover:shadow-lg">
+                <CardContent className={`p-0 h-full`}>
+                  <div className={`bg-gradient-to-br ${activity.color} p-6 h-full flex flex-col`}>
+                    <div className="mb-4">
+                      {activity.icon}
+                    </div>
+                    <h3 className="text-xl font-bold mb-2">{activity.title}</h3>
+                    <p className="text-gray-700 mb-6 flex-grow">{activity.description}</p>
+                    <div>
+                      {activity.available ? (
+                        <Link href={activity.href}>
+                          <Button className="bg-white text-gray-800 hover:bg-gray-100">
+                            Start Activity
+                          </Button>
+                        </Link>
+                      ) : (
+                        <Button disabled className="bg-gray-200 text-gray-500 cursor-not-allowed">
+                          Coming Soon
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </motion.div>
-          )}
-        </CardContent>
-      </Card>
+          ))}
+        </div>
+      </div>
+      
+      {/* Footer */}
+      <footer className="w-full py-8 bg-white border-t">
+        <div className="container mx-auto max-w-6xl px-4 text-center">
+          <p className="text-gray-600">© 2025 BrainBounce. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
-};
-
-export default MultiplicationGame;
+}
