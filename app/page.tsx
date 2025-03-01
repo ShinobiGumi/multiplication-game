@@ -35,12 +35,12 @@ export default function Home() {
       available: false
     },
     {
-      title: "Coding for Kids",
-      description: "Introduction to coding concepts through visual blocks",
+      title: "Coding with AI for Kids",
+      description: "Learn about AI and coding concepts through interactive activities",
       icon: <LucideCode className="h-10 w-10 text-amber-500" />,
       color: "from-amber-50 to-amber-100",
       href: "/coding",
-      available: false
+      available: true
     }
   ];
   
