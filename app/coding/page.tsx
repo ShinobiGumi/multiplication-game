@@ -320,7 +320,7 @@ export default function CodingWithAI() {
                 <div className="mt-8 p-6 bg-amber-50 rounded-lg border border-amber-200">
                   <h3 className="text-xl font-bold mb-3">Try it out!</h3>
                   <p className="mb-4">
-                    Most AI tools need an adult's help to set up. Ask your parents or teachers to help you explore {selectedAI}!
+                  Most AI tools need an adult&apos;s help to set up. Ask your parents or teachers to help you explore {selectedAI}!
                   </p>
                   <Button 
                     className="bg-amber-500 hover:bg-amber-600 text-white"
