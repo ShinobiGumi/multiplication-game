@@ -21,7 +21,7 @@ const MultiplicationGame = () => {
   const [score, setScore] = useState<number>(0);
   const [showCorrectImage, setShowCorrectImage] = useState<boolean>(false);
   const [showIncorrectImage, setShowIncorrectImage] = useState<boolean>(false);
-  const [questionPool, setQuestionPool] = useState<number[]>([]); // ✅ Used correctly now
+  const [questionPool, setQuestionPool] = useState<number[]>([]);
 
   // Load saved name on component mount
   useEffect(() => {
@@ -29,13 +29,20 @@ const MultiplicationGame = () => {
     if (storedName) setName(storedName);
   }, []);
 
-  // Initialize question pool when game starts
+  // Watch for question pool updates and generate a new question
+  useEffect(() => {
+    if (gameState === "playing" && questionPool.length > 0) {
+      generateNewQuestion();
+    }
+  }, [questionPool, gameState]);
+
+  // Initialize question pool
   const initializeQuestions = () => {
-    setQuestionPool(Array.from({ length: 10 }, (_, i) => i + 1)); // Fill with numbers 1-10
+    setQuestionPool(Array.from({ length: 10 }, (_, i) => i + 1)); // Numbers 1-10
     setScore(0);
   };
 
-  // Generate a new question, removing used numbers
+  // Generate a new question
   const generateNewQuestion = () => {
     if (questionPool.length === 0) {
       setGameState("complete");
@@ -49,7 +56,6 @@ const MultiplicationGame = () => {
 
     // Remove question from pool
     setQuestionPool((prevPool) => prevPool.filter((n) => n !== num1));
-
     setAnswer("");
   };
 
@@ -57,8 +63,7 @@ const MultiplicationGame = () => {
     if (name && selectedTable) {
       localStorage.setItem("playerName", name);
       setGameState("playing");
-      initializeQuestions();
-      setTimeout(generateNewQuestion, 500);
+      initializeQuestions(); // Correct placement before setting the game state
     }
   };
 
@@ -73,7 +78,6 @@ const MultiplicationGame = () => {
       setTimeout(() => setShowCorrectImage(false), 1000);
 
       setScore((prev) => prev + 1);
-
       setTimeout(generateNewQuestion, 1000);
     } else {
       setShowIncorrectImage(true);
