@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BrainBounce | Learn AI & Coding",
+  title: "BrainBounce | Learn AI & Coding with Louis",
   description: "An interactive learning platform for kids to explore AI, coding, and math!",
 };
 
