@@ -225,7 +225,7 @@ export default function CodingWithAI() {
                 <div className="w-full md:w-1/2">
                   <h2 className="text-3xl font-bold mb-4 text-amber-600">What is AI?</h2>
                   <p className="mb-4 text-lg">
-                    AI stands for <span className="font-bold">Artificial Intelligence</span>. It's technology that helps computers think a bit like humans!
+                    AI stands for <span className="font-bold">Artificial Intelligence</span>. It&apos;s technology that helps computers think a bit like humans!
                   </p>
                   <p className="mb-4 text-lg">
                     AI can learn from examples, recognize patterns, and make decisions on its own.
@@ -418,10 +418,10 @@ export default function CodingWithAI() {
                 </CardHeader>
                 <CardContent>
                   <div className="bg-gray-800 text-white p-4 rounded-lg font-mono text-sm mb-4">
-                    <p className="text-green-400">// This is a simple program that uses AI</p>
-                    <p className="text-purple-400">function</p> <span className="text-yellow-400">makeRobotMove</span>() &#123;
-                    <p className="pl-4"><span className="text-purple-400">if</span> (obstacleAhead()) &#123;</p>
-                    <p className="pl-8 text-blue-300">robot.turn("right");</p>
+                  <p className="text-green-400">{/* This is a simple program that uses AI */}</p>
+                  <p className="text-purple-400">function</p> <span className="text-yellow-400">makeRobotMove</span>() &#123;
+                  <p className="pl-4"><span className="text-purple-400">if</span> (obstacleAhead()) &#123;</p>
+                  <p className="pl-8 text-blue-300">robot.turn(&quot;right&quot;);</p>
                     <p className="pl-4">&#125; <span className="text-purple-400">else</span> &#123;</p>
                     <p className="pl-8 text-blue-300">robot.moveForward();</p>
                     <p className="pl-4">&#125;</p>
@@ -551,7 +551,7 @@ export default function CodingWithAI() {
                 <ul className="space-y-2">
                   <li className="flex items-start">
                     <Sparkles className="h-5 w-5 text-amber-500 mr-2 flex-shrink-0 mt-0.5" />
-                    <span>The more you learn about AI, the better you'll understand how it works!</span>
+                    <span>Remember that AI is a tool created by humans to help us solve problems.</span>
                   </li>
                   <li className="flex items-start">
                     <Sparkles className="h-5 w-5 text-amber-500 mr-2 flex-shrink-0 mt-0.5" />
