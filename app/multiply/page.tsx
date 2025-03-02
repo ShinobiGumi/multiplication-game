@@ -16,30 +16,43 @@ const MultiplicationGame = () => {
   const [name, setName] = useState<string>("");
   const [selectedTable, setSelectedTable] = useState<string>("");
   const [gameState, setGameState] = useState<"welcome" | "playing" | "complete">("welcome");
-  const [currentQuestion, setCurrentQuestion] = useState<Question>({ num1: 1, num2: 1 });
+  const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [answer, setAnswer] = useState<string>("");
   const [score, setScore] = useState<number>(0);
   const [correctQuestions, setCorrectQuestions] = useState<number[]>([]);
   const [showCorrectImage, setShowCorrectImage] = useState<boolean>(false);
   const [showIncorrectImage, setShowIncorrectImage] = useState<boolean>(false);
+  const [questionPool, setQuestionPool] = useState<number[]>([]);
 
+  // Load saved name on component mount
   useEffect(() => {
     const storedName = localStorage.getItem("playerName");
     if (storedName) setName(storedName);
   }, []);
 
+  // Generate a pool of questions when game starts
+  const initializeQuestions = () => {
+    setQuestionPool(Array.from({ length: 10 }, (_, i) => i + 1));
+    setCorrectQuestions([]);
+    setScore(0);
+  };
+
+  // Generate a new question from remaining pool
   const generateNewQuestion = () => {
-    const remainingNumbers = Array.from({ length: 10 }, (_, i) => i + 1).filter(
-      (num) => !correctQuestions.includes(num)
-    );
+    setQuestionPool((prevPool) => {
+      if (prevPool.length === 0) {
+        setGameState("complete");
+        return prevPool;
+      }
 
-    if (remainingNumbers.length === 0) {
-      setGameState("complete");
-      return;
-    }
+      const randomIndex = Math.floor(Math.random() * prevPool.length);
+      const num1 = prevPool[randomIndex];
+      setCurrentQuestion({ num1, num2: parseInt(selectedTable) });
 
-    const randomNum = remainingNumbers[Math.floor(Math.random() * remainingNumbers.length)];
-    setCurrentQuestion({ num1: randomNum, num2: parseInt(selectedTable) });
+      // Remove question from the pool
+      return prevPool.filter((n) => n !== num1);
+    });
+
     setAnswer("");
   };
 
@@ -47,39 +60,28 @@ const MultiplicationGame = () => {
     if (name && selectedTable) {
       localStorage.setItem("playerName", name);
       setGameState("playing");
-      setScore(0);
-      setCorrectQuestions([]);
-      generateNewQuestion();
+      initializeQuestions();
+      setTimeout(generateNewQuestion, 500);
     }
   };
 
   const handleAnswerSubmit = () => {
+    if (!currentQuestion) return;
+
     const correctAnswer = currentQuestion.num1 * currentQuestion.num2;
     const isCorrect = parseInt(answer) === correctAnswer;
 
     if (isCorrect) {
       setShowCorrectImage(true);
-      setTimeout(() => setShowCorrectImage(false), 2000);
+      setTimeout(() => setShowCorrectImage(false), 1000);
 
-      setCorrectQuestions((prevCorrect) => {
-        if (!prevCorrect.includes(currentQuestion.num1)) {
-          const updatedCorrect = [...prevCorrect, currentQuestion.num1];
-          setScore(updatedCorrect.length);
+      setCorrectQuestions((prev) => [...prev, currentQuestion.num1]);
+      setScore((prev) => prev + 1);
 
-          if (updatedCorrect.length >= 10) {
-            setTimeout(() => setGameState("complete"), 2000);
-          } else {
-            setTimeout(generateNewQuestion, 2000);
-          }
-
-          return updatedCorrect;
-        }
-        return prevCorrect;
-      });
+      setTimeout(generateNewQuestion, 1000);
     } else {
       setShowIncorrectImage(true);
-      setTimeout(() => setShowIncorrectImage(false), 2000);
-      setTimeout(generateNewQuestion, 2000);
+      setTimeout(() => setShowIncorrectImage(false), 1000);
     }
   };
 
@@ -141,13 +143,18 @@ const MultiplicationGame = () => {
             <div className="text-center space-y-6">
               <h2 className="text-2xl font-bold text-gray-400">Hi {name}!</h2>
               <div className="text-lg text-gray-400">Score: {score}/10</div>
-              <p className="text-4xl font-bold text-gray-400">
-                {currentQuestion.num1} × {currentQuestion.num2} = ?
-              </p>
-              <Input type="number" value={answer} onChange={(e) => setAnswer(e.target.value)} onKeyDown={handleKeyPress} className="text-center text-2xl bg-white text-gray-400" autoFocus />
-              <Button onClick={handleAnswerSubmit} disabled={!answer} className="text-1xl font-bold text-gray-400">
-                Check Answer
-              </Button>
+
+              {currentQuestion && (
+                <>
+                  <p className="text-4xl font-bold text-gray-400">
+                    {currentQuestion.num1} × {currentQuestion.num2} = ?
+                  </p>
+                  <Input type="number" value={answer} onChange={(e) => setAnswer(e.target.value)} onKeyDown={handleKeyPress} className="text-center text-2xl bg-white text-gray-400" autoFocus />
+                  <Button onClick={handleAnswerSubmit} disabled={!answer} className="text-1xl font-bold text-gray-400">
+                    Check Answer
+                  </Button>
+                </>
+              )}
             </div>
           ) : (
             <h2 className="text-3xl font-bold text-green-500">🎉 Well Done, {name}! 🎉</h2>
