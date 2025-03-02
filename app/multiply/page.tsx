@@ -58,7 +58,6 @@ const MultiplicationGame = () => {
       return [...prevCorrect]; // Creating a new array to ensure state updates correctly
     });
   };
-  
 
   const handleStart = () => {
     if (name && selectedTable) {
