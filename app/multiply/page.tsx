@@ -41,23 +41,24 @@ const MultiplicationGame = () => {
         setGameState("complete");
         return prevCorrect;
       }
-
+  
       const remainingNumbers = Array.from({ length: 10 }, (_, i) => i + 1).filter(
         (num) => !prevCorrect.includes(num)
       );
-
+  
       if (remainingNumbers.length === 0) {
         setGameState("complete");
         return prevCorrect;
       }
-
+  
       const randomNum = remainingNumbers[Math.floor(Math.random() * remainingNumbers.length)];
       setCurrentQuestion({ num1: randomNum, num2: parseInt(selectedTable) });
       setAnswer("");
       setFeedback({ show: false, correct: false, correctAnswer: null });
-      return prevCorrect;
+      return [...prevCorrect]; // Creating a new array to ensure state updates correctly
     });
   };
+  
 
   const handleStart = () => {
     if (name && selectedTable) {
@@ -131,7 +132,7 @@ const MultiplicationGame = () => {
       <AnimatePresence>
         {showCorrectImage && (
           <motion.div 
-            className="absolute left-4 top-1/2 z-10"
+            className="absolute left-[30%] top-1/2 z-10"
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -100, opacity: 0 }}
@@ -149,7 +150,7 @@ const MultiplicationGame = () => {
         
         {showIncorrectImage && (
           <motion.div 
-            className="absolute left-4 top-1/2 z-10"
+            className="absolute left-[30%] top-1/2 z-10"
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -100, opacity: 0 }}
