@@ -19,10 +19,9 @@ const MultiplicationGame = () => {
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [answer, setAnswer] = useState<string>("");
   const [score, setScore] = useState<number>(0);
-  const [correctQuestions, setCorrectQuestions] = useState<number[]>([]);
   const [showCorrectImage, setShowCorrectImage] = useState<boolean>(false);
   const [showIncorrectImage, setShowIncorrectImage] = useState<boolean>(false);
-  const [questionPool, setQuestionPool] = useState<number[]>([]);
+  const [questionPool, setQuestionPool] = useState<number[]>([]); // ✅ Used correctly now
 
   // Load saved name on component mount
   useEffect(() => {
@@ -30,28 +29,26 @@ const MultiplicationGame = () => {
     if (storedName) setName(storedName);
   }, []);
 
-  // Generate a pool of questions when game starts
+  // Initialize question pool when game starts
   const initializeQuestions = () => {
-    setQuestionPool(Array.from({ length: 10 }, (_, i) => i + 1));
-    setCorrectQuestions([]);
+    setQuestionPool(Array.from({ length: 10 }, (_, i) => i + 1)); // Fill with numbers 1-10
     setScore(0);
   };
 
-  // Generate a new question from remaining pool
+  // Generate a new question, removing used numbers
   const generateNewQuestion = () => {
-    setQuestionPool((prevPool) => {
-      if (prevPool.length === 0) {
-        setGameState("complete");
-        return prevPool;
-      }
+    if (questionPool.length === 0) {
+      setGameState("complete");
+      return;
+    }
 
-      const randomIndex = Math.floor(Math.random() * prevPool.length);
-      const num1 = prevPool[randomIndex];
-      setCurrentQuestion({ num1, num2: parseInt(selectedTable) });
+    const randomIndex = Math.floor(Math.random() * questionPool.length);
+    const num1 = questionPool[randomIndex];
 
-      // Remove question from the pool
-      return prevPool.filter((n) => n !== num1);
-    });
+    setCurrentQuestion({ num1, num2: parseInt(selectedTable) });
+
+    // Remove question from pool
+    setQuestionPool((prevPool) => prevPool.filter((n) => n !== num1));
 
     setAnswer("");
   };
@@ -75,7 +72,6 @@ const MultiplicationGame = () => {
       setShowCorrectImage(true);
       setTimeout(() => setShowCorrectImage(false), 1000);
 
-      setCorrectQuestions((prev) => [...prev, currentQuestion.num1]);
       setScore((prev) => prev + 1);
 
       setTimeout(generateNewQuestion, 1000);
