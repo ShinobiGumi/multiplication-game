@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, XCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
@@ -20,13 +19,7 @@ const MultiplicationGame = () => {
   const [currentQuestion, setCurrentQuestion] = useState<Question>({ num1: 1, num2: 1 });
   const [answer, setAnswer] = useState<string>("");
   const [score, setScore] = useState<number>(0);
-  const [feedback, setFeedback] = useState({
-    show: false,
-    correct: false,
-    correctAnswer: null as number | null,
-  });
   const [correctQuestions, setCorrectQuestions] = useState<number[]>([]);
-  const [incorrectQuestions, setIncorrectQuestions] = useState<number[]>([]);
   const [showCorrectImage, setShowCorrectImage] = useState<boolean>(false);
   const [showIncorrectImage, setShowIncorrectImage] = useState<boolean>(false);
 
@@ -48,7 +41,6 @@ const MultiplicationGame = () => {
     const randomNum = remainingNumbers[Math.floor(Math.random() * remainingNumbers.length)];
     setCurrentQuestion({ num1: randomNum, num2: parseInt(selectedTable) });
     setAnswer("");
-    setFeedback({ show: false, correct: false, correctAnswer: null });
   };
 
   const handleStart = () => {
@@ -57,7 +49,6 @@ const MultiplicationGame = () => {
       setGameState("playing");
       setScore(0);
       setCorrectQuestions([]);
-      setIncorrectQuestions([]);
       generateNewQuestion();
     }
   };
@@ -65,8 +56,6 @@ const MultiplicationGame = () => {
   const handleAnswerSubmit = () => {
     const correctAnswer = currentQuestion.num1 * currentQuestion.num2;
     const isCorrect = parseInt(answer) === correctAnswer;
-
-    setFeedback({ show: true, correct: isCorrect, correctAnswer: isCorrect ? null : correctAnswer });
 
     if (isCorrect) {
       setShowCorrectImage(true);
@@ -90,25 +79,12 @@ const MultiplicationGame = () => {
     } else {
       setShowIncorrectImage(true);
       setTimeout(() => setShowIncorrectImage(false), 2000);
-
-      setIncorrectQuestions((prev) => {
-        const updatedIncorrect = [...new Set([...prev, currentQuestion.num1])];
-        setTimeout(generateNewQuestion, 2000);
-        return updatedIncorrect;
-      });
+      setTimeout(generateNewQuestion, 2000);
     }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && answer) handleAnswerSubmit();
-  };
-
-  const handleRestart = () => {
-    setGameState("welcome");
-    setSelectedTable("");
-    setScore(0);
-    setCorrectQuestions([]);
-    setIncorrectQuestions([]);
   };
 
   return (
