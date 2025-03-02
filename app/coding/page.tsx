@@ -19,12 +19,18 @@ import {
 } from "lucide-react";
 
 // Create local CardHeader and CardTitle components to fix import errors
-const CardHeader: React.FC<{children: React.ReactNode}> = ({ children }) => {
-  return <div className="flex flex-col space-y-1.5 p-6">{children}</div>;
+const CardHeader: React.FC<{
+  children: React.ReactNode;
+  className?: string; // Make className optional
+}> = ({ children, className = "" }) => {
+  return <div className={`flex flex-col space-y-1.5 p-6 ${className}`}>{children}</div>;
 };
 
-const CardTitle: React.FC<{children: React.ReactNode}> = ({ children }) => {
-  return <h3 className="text-lg font-semibold leading-none tracking-tight">{children}</h3>;
+const CardTitle: React.FC<{
+  children: React.ReactNode;
+  className?: string; // Make className optional
+}> = ({ children, className = "" }) => {
+  return <h3 className={`text-lg font-semibold leading-none tracking-tight ${className}`}>{children}</h3>;
 };
 
 export default function CodingWithAI() {
@@ -34,7 +40,7 @@ export default function CodingWithAI() {
   const [showResult, setShowResult] = useState(false);
   const [selectedAI, setSelectedAI] = useState<string | null>(null);
   const [robotMessages, setRobotMessages] = useState([
-    "Hello! I'm AIBuddy. Let's learn about artificial intelligence!",
+    "Hello! I&apos;m AIBuddy. Let&apos;s learn about artificial intelligence!",
   ]);
   const [userInput, setUserInput] = useState("");
 
@@ -46,13 +52,13 @@ export default function CodingWithAI() {
     
     // Simulate AI response based on keywords
     setTimeout(() => {
-      let response = "I'm not sure about that. Can you ask me about AI, coding, or robots?";
+      let response = `I&apos;m not sure about that. Can you ask me about AI, coding, or robots?`;
       
       const lowerInput = input.toLowerCase();
       if (lowerInput.includes("what is ai")) {
         response = "AI or Artificial Intelligence is technology that helps computers think and learn a bit like humans do!";
       } else if (lowerInput.includes("coding")) {
-        response = "Coding is how we give instructions to computers. It's like writing a recipe for the computer to follow!";
+        response = "Coding is how we give instructions to computers. It&apos;s like writing a recipe for the computer to follow!";
       } else if (lowerInput.includes("robot")) {
         response = "Robots are machines that can do tasks automatically. Some robots use AI to learn and make decisions!";
       } else if (lowerInput.includes("game")) {
@@ -104,7 +110,7 @@ export default function CodingWithAI() {
         "By reading books",
         "By looking at lots of examples",
         "By magic",
-        "They don't learn at all"
+        "They don&apos;t learn at all"
       ],
       correctAnswer: 1
     },
@@ -145,13 +151,13 @@ export default function CodingWithAI() {
     {
       name: "Claude",
       icon: <MessageSquare className="h-8 w-8 text-purple-500" />,
-      description: "Claude is great at understanding and writing text. It's really helpful for homework, creative writing, and learning to code!",
+      description: "Claude is great at understanding and writing text. It&apos;s really helpful for homework, creative writing, and learning to code!",
       strengths: ["Writing stories", "Explaining things", "Coding help", "Answering questions"]
     },
     {
       name: "Perplexity",
       icon: <Search className="h-8 w-8 text-blue-500" />,
-      description: "Perplexity is like a super-powered search engine. It doesn't just find information, it summarizes it for you!",
+      description: "Perplexity is like a super-powered search engine. It doesn&apos;t just find information, it summarizes it for you!",
       strengths: ["Finding facts", "Research", "Summarizing information", "Citing sources"]
     },
     {
@@ -163,7 +169,7 @@ export default function CodingWithAI() {
     {
       name: "Scratch + AI",
       icon: <Code className="h-8 w-8 text-orange-500" />,
-      description: "Scratch with AI helps you learn to code by making games and animations with blocks. It's super fun!",
+      description: "Scratch with AI helps you learn to code by making games and animations with blocks. It&apos;s super fun!",
       strengths: ["Learning to code", "Making games", "Creating animations", "Solving puzzles"]
     }
   ];
@@ -320,7 +326,7 @@ export default function CodingWithAI() {
                 <div className="mt-8 p-6 bg-amber-50 rounded-lg border border-amber-200">
                   <h3 className="text-xl font-bold mb-3">Try it out!</h3>
                   <p className="mb-4">
-                  Most AI tools need an adult&apos;s help to set up. Ask your parents or teachers to help you explore {selectedAI}!
+                    Most AI tools need an adult&apos;s help to set up. Ask your parents or teachers to help you explore {selectedAI}!
                   </p>
                   <Button 
                     className="bg-amber-500 hover:bg-amber-600 text-white"
@@ -418,10 +424,10 @@ export default function CodingWithAI() {
                 </CardHeader>
                 <CardContent>
                   <div className="bg-gray-800 text-white p-4 rounded-lg font-mono text-sm mb-4">
-                  <p className="text-green-400">{/* This is a simple program that uses AI */}</p>
-                  <p className="text-purple-400">function</p> <span className="text-yellow-400">makeRobotMove</span>() &#123;
-                  <p className="pl-4"><span className="text-purple-400">if</span> (obstacleAhead()) &#123;</p>
-                  <p className="pl-8 text-blue-300">robot.turn(&quot;right&quot;);</p>
+                    <p className="text-green-400">{/* This is a simple program that uses AI */}</p>
+                    <p className="text-purple-400">function</p> <span className="text-yellow-400">makeRobotMove</span>() &#123;
+                    <p className="pl-4"><span className="text-purple-400">if</span> (obstacleAhead()) &#123;</p>
+                    <p className="pl-8 text-blue-300">robot.turn(&quot;right&quot;);</p>
                     <p className="pl-4">&#125; <span className="text-purple-400">else</span> &#123;</p>
                     <p className="pl-8 text-blue-300">robot.moveForward();</p>
                     <p className="pl-4">&#125;</p>
@@ -514,7 +520,7 @@ export default function CodingWithAI() {
                       {score === quizQuestions.length 
                         ? "Perfect Score! Amazing!" 
                         : score >= Math.floor(quizQuestions.length / 2) 
-                          ? "Good Job! You're learning about AI!" 
+                          ? "Good Job! You&apos;re learning about AI!" 
                           : "Keep Learning About AI!"}
                     </h3>
                     
@@ -551,7 +557,7 @@ export default function CodingWithAI() {
                 <ul className="space-y-2">
                   <li className="flex items-start">
                     <Sparkles className="h-5 w-5 text-amber-500 mr-2 flex-shrink-0 mt-0.5" />
-                    <span>Remember that AI is a tool created by humans to help us solve problems.</span>
+                    <span>The more you learn about AI, the better you&apos;ll understand how it works!</span>
                   </li>
                   <li className="flex items-start">
                     <Sparkles className="h-5 w-5 text-amber-500 mr-2 flex-shrink-0 mt-0.5" />
