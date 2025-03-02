@@ -36,27 +36,19 @@ const MultiplicationGame = () => {
   }, []);
 
   const generateNewQuestion = () => {
-    setCorrectQuestions((prevCorrect) => {
-      if (prevCorrect.length >= 10) {
-        setGameState("complete");
-        return prevCorrect;
-      }
-  
-      const remainingNumbers = Array.from({ length: 10 }, (_, i) => i + 1).filter(
-        (num) => !prevCorrect.includes(num)
-      );
-  
-      if (remainingNumbers.length === 0) {
-        setGameState("complete");
-        return prevCorrect;
-      }
-  
-      const randomNum = remainingNumbers[Math.floor(Math.random() * remainingNumbers.length)];
-      setCurrentQuestion({ num1: randomNum, num2: parseInt(selectedTable) });
-      setAnswer("");
-      setFeedback({ show: false, correct: false, correctAnswer: null });
-      return [...prevCorrect]; // Creating a new array to ensure state updates correctly
-    });
+    const remainingNumbers = Array.from({ length: 10 }, (_, i) => i + 1).filter(
+      (num) => !correctQuestions.includes(num)
+    );
+
+    if (remainingNumbers.length === 0) {
+      setGameState("complete");
+      return;
+    }
+
+    const randomNum = remainingNumbers[Math.floor(Math.random() * remainingNumbers.length)];
+    setCurrentQuestion({ num1: randomNum, num2: parseInt(selectedTable) });
+    setAnswer("");
+    setFeedback({ show: false, correct: false, correctAnswer: null });
   };
 
   const handleStart = () => {
@@ -98,8 +90,12 @@ const MultiplicationGame = () => {
     } else {
       setShowIncorrectImage(true);
       setTimeout(() => setShowIncorrectImage(false), 2000);
-      setIncorrectQuestions((prev) => [...new Set([...prev, currentQuestion.num1])]);
-      setTimeout(generateNewQuestion, 2000);
+
+      setIncorrectQuestions((prev) => {
+        const updatedIncorrect = [...new Set([...prev, currentQuestion.num1])];
+        setTimeout(generateNewQuestion, 2000);
+        return updatedIncorrect;
+      });
     }
   };
 
@@ -118,50 +114,31 @@ const MultiplicationGame = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gradient-to-br from-blue-50 to-blue-100 relative">
       <div className="w-full max-w-2xl mb-6">
-        <Image 
-          src="/banner.svg" 
-          alt="Multiplication Adventure" 
-          width={800}
-          height={200}
-          className="rounded-lg shadow-lg" 
-        />
+        <Image src="/banner.svg" alt="Multiplication Adventure" width={800} height={200} className="rounded-lg shadow-lg" />
       </div>
-      
+
       {/* Feedback images */}
       <AnimatePresence>
         {showCorrectImage && (
-          <motion.div 
+          <motion.div
             className="absolute left-[30%] top-1/2 z-10"
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -100, opacity: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <Image 
-              src="/sample1.jpg" 
-              alt="Correct answer" 
-              width={150} 
-              height={150} 
-              className="rounded-lg shadow-lg" 
-            />
+            <Image src="/sample1.jpg" alt="Correct answer" width={150} height={150} className="rounded-lg shadow-lg" />
           </motion.div>
         )}
-        
         {showIncorrectImage && (
-          <motion.div 
+          <motion.div
             className="absolute left-[30%] top-1/2 z-10"
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -100, opacity: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <Image 
-              src="/sample2.jpg" 
-              alt="Incorrect answer" 
-              width={150} 
-              height={150} 
-              className="rounded-lg shadow-lg" 
-            />
+            <Image src="/sample2.jpg" alt="Incorrect answer" width={150} height={150} className="rounded-lg shadow-lg" />
           </motion.div>
         )}
       </AnimatePresence>
@@ -171,18 +148,8 @@ const MultiplicationGame = () => {
           {gameState === "welcome" ? (
             <div className="space-y-6 text-center">
               <h2 className="text-2xl font-bold text-gray-400">Multiplication Adventure</h2>
-              <Input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Your Name"
-                className="text-center text-lg bg-white text-gray-400"
-              />
-              <select
-                value={selectedTable}
-                onChange={(e) => setSelectedTable(e.target.value)}
-                className="w-full p-2 border rounded-md text-gray-400"
-              >
+              <Input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Your Name" className="text-center text-lg bg-white text-gray-400" />
+              <select value={selectedTable} onChange={(e) => setSelectedTable(e.target.value)} className="w-full p-2 border rounded-md text-gray-400">
                 <option value="">Choose a table</option>
                 {[2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
                   <option key={num} value={num}>
@@ -190,87 +157,24 @@ const MultiplicationGame = () => {
                   </option>
                 ))}
               </select>
-              <Button 
-                onClick={handleStart} 
-                disabled={!name || !selectedTable} 
-                className="w-full text-gray-400 font-bold"
-              >
+              <Button onClick={handleStart} disabled={!name || !selectedTable} className="w-full text-gray-400 font-bold">
                 Start
               </Button>
             </div>
           ) : gameState === "playing" ? (
             <div className="text-center space-y-6">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold text-gray-400">Hi {name}!</h2>
-                <div className="text-lg text-gray-400">Score: {score}/10</div>
-              </div>
-
-              {feedback.show && (
-                <motion.div
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  className="my-4"
-                >
-                  {feedback.correct ? (
-                    <div className="flex items-center justify-center text-green-500 text-2xl">
-                      <CheckCircle2 className="mr-2" />
-                      Correct!
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center justify-center text-red-500">
-                      <div className="flex items-center text-2xl mb-2">
-                        <XCircle className="mr-2" />
-                        Try again!
-                      </div>
-                      <div>The correct answer is {feedback.correctAnswer}</div>
-                    </div>
-                  )}
-                </motion.div>
-              )}
-
+              <h2 className="text-2xl font-bold text-gray-400">Hi {name}!</h2>
+              <div className="text-lg text-gray-400">Score: {score}/10</div>
               <p className="text-4xl font-bold text-gray-400">
                 {currentQuestion.num1} × {currentQuestion.num2} = ?
               </p>
-              <Input
-                type="number"
-                value={answer}
-                onChange={(e) => setAnswer(e.target.value)}
-                onKeyDown={handleKeyPress}
-                className="text-center text-2xl bg-white text-gray-400 focus:outline-none focus:ring-0 focus:border-gray-300"
-                autoFocus
-              />
-              <Button 
-                className="text-1xl font-bold text-gray-400"
-                onClick={handleAnswerSubmit} 
-                disabled={!answer}
-              >
+              <Input type="number" value={answer} onChange={(e) => setAnswer(e.target.value)} onKeyDown={handleKeyPress} className="text-center text-2xl bg-white text-gray-400" autoFocus />
+              <Button onClick={handleAnswerSubmit} disabled={!answer} className="text-1xl font-bold text-gray-400">
                 Check Answer
               </Button>
             </div>
           ) : (
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="text-center space-y-6"
-            >
-              <motion.div
-                animate={{
-                  rotate: [0, 10, -10, 10, 0],
-                  scale: [1, 1.2, 1, 1.2, 1]
-                }}
-                transition={{ duration: 1, repeat: 2 }}
-              >
-                <h2 className="text-3xl font-bold text-green-500">
-                  🎉 Well Done, {name}! 🎉
-                </h2>
-              </motion.div>
-              <p className="text-xl">
-                You&apos;ve mastered the {selectedTable} times table!
-              </p>
-              <Button onClick={handleRestart}>
-                Play Again
-              </Button>
-            </motion.div>
+            <h2 className="text-3xl font-bold text-green-500">🎉 Well Done, {name}! 🎉</h2>
           )}
         </CardContent>
       </Card>
