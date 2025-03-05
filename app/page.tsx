@@ -130,7 +130,7 @@ export default function Home() {
                     <div className="mb-4">
                       {activity.icon}
                     </div>
-                    <h3 className="text-xl font-bold mb-2">{activity.title}</h3>
+                    <h3 className="text-xl text-gray-700 font-bold mb-2">{activity.title}</h3>
                     <p className="text-gray-700 mb-6 flex-grow">{activity.description}</p>
                     <div>
                       {activity.available ? (

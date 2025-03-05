@@ -181,7 +181,7 @@ export default function CodingWithAI() {
         <div className="container mx-auto max-w-6xl px-4">
           <div className="flex items-center justify-between">
             <Link href="/">
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 text-gray-900">
                 <ChevronLeft className="h-5 w-5" />
                 <span>Back to Home</span>
               </div>
@@ -227,7 +227,7 @@ export default function CodingWithAI() {
               transition={{ duration: 0.5 }}
               className="space-y-6"
             >
-              <div className="flex flex-col md:flex-row gap-8 items-center">
+              <div className="flex flex-col md:flex-row gap-8 items-center text-gray-900">
                 <div className="w-full md:w-1/2">
                   <h2 className="text-3xl font-bold mb-4 text-amber-600">What is AI?</h2>
                   <p className="mb-4 text-lg">
@@ -249,7 +249,7 @@ export default function CodingWithAI() {
 
               <div className="mt-8">
                 <h2 className="text-2xl font-bold mb-4 text-amber-600">What Can AI Do?</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-gray-900">
                   {[
                     { title: "Talk With You", icon: <MessageSquare className="h-10 w-10 text-blue-500" />, description: "AI can have conversations, answer questions, and help with homework." },
                     { title: "Create Art", icon: <PenTool className="h-10 w-10 text-purple-500" />, description: "AI can make pictures, draw characters, and design cool stuff." },
@@ -269,7 +269,7 @@ export default function CodingWithAI() {
 
               <div className="mt-8 bg-amber-50 p-6 rounded-lg border border-amber-200">
                 <h3 className="text-xl font-bold mb-3 text-amber-600">How AI Works - The Simple Version</h3>
-                <ol className="list-decimal pl-6 space-y-2">
+                <ol className="list-decimal pl-6 space-y-2 text-gray-900">
                   <li><span className="font-medium">Learning:</span> AI looks at lots of examples to learn patterns</li>
                   <li><span className="font-medium">Thinking:</span> It uses what it learned to understand new information</li>
                   <li><span className="font-medium">Creating:</span> It can make new things based on what it knows</li>
