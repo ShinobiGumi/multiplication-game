@@ -104,7 +104,6 @@ const HiraganaLearningPage = () => {
   const [answer, setAnswer] = useState<string>("");
   const [score, setScore] = useState<number>(0);
   const [totalQuestions, setTotalQuestions] = useState<number>(0);
-  const [questionPool, setQuestionPool] = useState<HiraganaCharacter[]>([]);
   const [correctlyAnsweredCharacters, setCorrectlyAnsweredCharacters] = useState<Set<string>>(new Set());
   const [showCorrectImage, setShowCorrectImage] = useState<boolean>(false);
   const [showIncorrectImage, setShowIncorrectImage] = useState<boolean>(false);
@@ -139,7 +138,6 @@ const HiraganaLearningPage = () => {
     // Set total unique characters for accurate scoring
     const totalUnique = getTotalUniqueCharacters(uniqueCharacters);
     
-    setQuestionPool(uniqueCharacters);
     setRemainingCharacters(uniqueCharacters);
     setTotalQuestions(totalUnique);
     setScore(0);
