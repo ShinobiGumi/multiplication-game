@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF8E8E"/>
+      <stop offset="100%" stop-color="#FF4E7A"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Main background with gradient -->
+  <rect width="800" height="200" rx="15" fill="url(#bgGradient)"/>
+  
+  <!-- Additional Hiragana characters -->
+  <g fill="rgba(255,255,255,0.2)">
+    <text x="30" y="40" font-family="Arial" font-size="36" font-weight="bold">あ</text>
+    <text x="80" y="90" font-family="Arial" font-size="28" font-weight="bold">い</text>
+    <text x="140" y="60" font-family="Arial" font-size="32" font-weight="bold">う</text>
+    <text x="720" y="70" font-family="Arial" font-size="36" font-weight="bold">え</text>
+    <text x="650" y="140" font-family="Arial" font-size="28" font-weight="bold">お</text>
+    <text x="670" y="40" font-family="Arial" font-size="32" font-weight="bold">か</text>
+    <!-- New additional Hiragana characters -->
+    <text x="250" y="35" font-family="Arial" font-size="30" font-weight="bold">き</text>
+    <text x="320" y="170" font-family="Arial" font-size="34" font-weight="bold">く</text>
+    <text x="480" y="30" font-family="Arial" font-size="32" font-weight="bold">け</text>
+    <text x="600" y="180" font-family="Arial" font-size="28" font-weight="bold">こ</text>
+    <text x="200" y="120" font-family="Arial" font-size="36" font-weight="bold">さ</text>
+    <text x="550" y="95" font-family="Arial" font-size="32" font-weight="bold">し</text>
+  </g>
+  
+  <!-- Moving dots/neurons animation with improved vertical movement -->
+  <circle cx="40" cy="150" r="5" fill="white" opacity="0.7">
+    <animate attributeName="cx" values="40;240;40" dur="4s" repeatCount="indefinite"/>
+    <animate attributeName="cy" values="150;130;170;140;150" dur="4s" repeatCount="indefinite"/>
+  </circle>
+  
+  <circle cx="600" cy="50" r="4" fill="white" opacity="0.7">
+    <animate attributeName="cx" values="600;400;600" dur="5s" repeatCount="indefinite"/>
+    <animate attributeName="cy" values="50;80;30;60;50" dur="5s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Main text -->
+  <g>
+    <!-- Shadow effect for title -->
+    <text x="402" y="63" font-family="Arial" font-size="36" font-weight="bold" fill="rgba(0,0,0,0.2)" text-anchor="middle">Louis Studios</text>
+    <text x="402" y="105" font-family="Arial" font-size="36" font-weight="bold" fill="rgba(0,0,0,0.2)" text-anchor="middle">HIRAGANA</text>
+    <text x="402" y="148" font-family="Arial" font-size="36" font-weight="bold" fill="rgba(0,0,0,0.2)" text-anchor="middle">ADVENTURE</text>
+    
+    <!-- Main title -->
+    <text x="400" y="103" font-family="Arial" font-size="36" font-weight="bold" fill="white" text-anchor="middle">HIRAGANA</text>
+    <text x="400" y="146" font-family="Arial" font-size="36" font-weight="bold" fill="white" text-anchor="middle">ADVENTURE</text>
+  </g>
+  
+  <!-- BrainBounce logo/branding - moved further left and higher -->
+  <g>
+    <!-- Small brain icon as perfect circle -->
+    <circle cx="60" cy="35" r="12" fill="#FFD700"/>
+    <circle cx="60" cy="35" r="10" fill="none" stroke="#FFA500" stroke-width="1.5"/>
+    
+    <!-- BrainBounce text - moved further left and higher -->
+    <text x="78" y="40" font-family="Arial" font-size="18" font-weight="bold" fill="white" alignment-baseline="middle">BrainBounce</text>
+  </g>
+  
+  <!-- Decorative pulsing circles -->
+  <circle cx="400" cy="100" r="140" fill="none" stroke="white" stroke-width="5" opacity="0.2">
+    <animate attributeName="r" values="140;150;140" dur="3s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.5;0.2;0.3" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  
+  <circle cx="400" cy="100" r="120" fill="none" stroke="white" stroke-width="1" opacity="0.2">
+    <animate attributeName="r" values="120;130;120" dur="4s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.5;0.2;0.3" dur="4s" repeatCount="indefinite"/>
+  </circle>
+</svg>

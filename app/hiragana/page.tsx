@@ -250,7 +250,7 @@ const HiraganaLearningPage = () => {
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gradient-to-br from-blue-50 to-blue-100 relative">
       <div className="w-full max-w-2xl mb-6">
         <Image 
-          src="/banner.svg" 
+          src="/hiragana.svg" 
           alt="Hiragana Adventure" 
           width={800} 
           height={200} 
@@ -360,7 +360,7 @@ const HiraganaLearningPage = () => {
                     autoFocus 
                   />
                   {showCorrectAnswer && (
-                    <div className="text-red-500 mb-4">
+                    <div className="text-blue-500 font-bold mb-4">
                       Correct answer: {showCorrectAnswer}
                     </div>
                   )}
