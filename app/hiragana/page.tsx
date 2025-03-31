@@ -569,7 +569,7 @@ const HiraganaLearningPage = () => {
                 🎉 Well Done, {name}! 🎉
               </motion.h2>
               <p className="text-xl text-gray-700">
-                You completed the '{selectedRowKey?.toUpperCase()}' set!
+                You completed the &apos;{selectedRowKey?.toUpperCase()}&apos; set!
               </p>
               {/* Display score only if it was a quiz */}
               {totalQuestions > 0 && (
