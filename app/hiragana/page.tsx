@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"; // Assuming components/ui/button.tsx is updated as per previous instructions
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
@@ -58,7 +58,6 @@ const mostFrequentWords: HiraganaCharacter[] = [
 
 const HiraganaLearningPage = () => {
   const [name, setName] = useState<string>("");
-  // Add "learning" state
   const [gameState, setGameState] = useState<"welcome" | "playing" | "learning" | "complete">("welcome");
   const [currentCharacter, setCurrentCharacter] = useState<HiraganaCharacter | null>(null);
   const [answer, setAnswer] = useState<string>("");
@@ -75,52 +74,35 @@ const HiraganaLearningPage = () => {
   // --- State for Learning Mode ---
   const [learningSet, setLearningSet] = useState<HiraganaCharacter[]>([]);
   const [currentLearningIndex, setCurrentLearningIndex] = useState<number>(0);
-  // --- End State for Learning Mode ---
 
-
-  // Memoize total unique characters (Keep as is)
+  // Memoize total unique characters
   const getTotalUniqueCharacters = React.useMemo(() => {
     return (characters: HiraganaCharacter[]) => {
       return new Set(characters.map(char => char.character)).size;
     };
   }, []);
 
-  // Persist game state (Keep as is)
+  // Persist/Load game state
   useEffect(() => {
     const storedName = localStorage.getItem("playerName");
     if (storedName) setName(storedName);
-    // Also load completed rows
     const storedCompleted = localStorage.getItem("completedRows");
     if (storedCompleted) {
         try {
             setCompletedRows(JSON.parse(storedCompleted));
         } catch (e) {
             console.error("Failed to parse completed rows from local storage", e);
-            localStorage.removeItem("completedRows"); // Clear invalid data
+            localStorage.removeItem("completedRows");
         }
     }
   }, []);
 
-  // Save completed rows to local storage when it changes
+  // Save completed rows
   useEffect(() => {
-    if (completedRows.length > 0) {
+    if (completedRows.length > 0) { // Avoid saving empty array initially if not needed
         localStorage.setItem("completedRows", JSON.stringify(completedRows));
     }
-    // Optional: Clear if empty to avoid storing empty array string
-    // else {
-    //     localStorage.removeItem("completedRows");
-    // }
   }, [completedRows]);
-
-
-  // Debug useEffect (Keep as is)
-  useEffect(() => {
-    // console.log("Correctly answered characters:", Array.from(correctlyAnsweredCharacters));
-    // console.log("Remaining characters:", remainingCharacters.map(c => c.character));
-    // console.log("Current Learning Index:", currentLearningIndex);
-    // console.log("Learning Set:", learningSet.map(c => c.character));
-  }, [correctlyAnsweredCharacters, remainingCharacters, currentLearningIndex, learningSet]);
-
 
   // --- Quiz Mode Initialization ---
   const initializeQuiz = (characters: HiraganaCharacter[], rowKey?: string) => {
@@ -130,28 +112,28 @@ const HiraganaLearningPage = () => {
     setRemainingCharacters(uniqueCharacters);
     setTotalQuestions(totalUnique);
     setScore(0);
-    setGameState("playing"); // Set to playing for quiz
+    setGameState("playing");
     setSelectedRowKey(rowKey || null);
     setCorrectlyAnsweredCharacters(new Set());
     setShowCorrectAnswer("");
-    setCurrentCharacter(null); // Clear previous character
+    setCurrentCharacter(null);
 
     setTimeout(() => {
       generateNewQuestion(uniqueCharacters);
-    }, 100); // Short delay for state update
+    }, 100);
   };
 
   // --- Learning Mode Initialization ---
   const initializeLearning = (characters: HiraganaCharacter[], rowKey?: string) => {
      if (characters.length === 0) {
          console.warn("Attempted to start learning mode with an empty set.");
-         return; // Don't start if the set is empty
+         return;
      }
-    setLearningSet([...characters]); // Use the full set, don't shuffle for learning
+    setLearningSet([...characters]);
     setCurrentLearningIndex(0);
-    setCurrentCharacter(characters[0]); // Show the first character
-    setGameState("learning"); // Set to learning mode
-    setSelectedRowKey(rowKey || null); // Keep track of the set being learned
+    setCurrentCharacter(characters[0]);
+    setGameState("learning");
+    setSelectedRowKey(rowKey || null);
     // Clear quiz-specific states
     setScore(0);
     setTotalQuestions(0);
@@ -165,7 +147,8 @@ const HiraganaLearningPage = () => {
   const generateNewQuestion = (pool: HiraganaCharacter[]) => {
     if (pool.length === 0) {
       if (selectedRowKey && !completedRows.includes(selectedRowKey)) {
-        setCompletedRows(prev => [...prev, selectedRowKey]);
+        // Avoid duplicates if already completed
+        setCompletedRows(prev => Array.from(new Set([...prev, selectedRowKey])));
       }
       setGameState("complete");
       return;
@@ -193,20 +176,16 @@ const HiraganaLearningPage = () => {
       } else if (type === 'frequent') {
           characters = mostFrequentWords;
           rowKeyStr = 'frequent';
-      } else if (type === 'special') {
-            characters = hiraganaRows.special; // Assuming 'special' is a key in hiraganaRows
-            rowKeyStr = 'special';
+      } else if (type === 'special' && hiraganaRows.special) {
+           characters = hiraganaRows.special;
+           rowKeyStr = 'special';
       }
+
 
       if (!characters || characters.length === 0) {
           console.error("No characters found for selection:", type, key);
           return;
       }
-
-      // Instead of directly starting, maybe show two buttons: Learn / Quiz
-      // For simplicity now, we'll add separate handlers or modify these
-      // Let's add separate handlers for now.
-      console.log("Selected set for key:", rowKeyStr); // Debug log
       return { characters, key: rowKeyStr };
   };
 
@@ -242,11 +221,11 @@ const HiraganaLearningPage = () => {
       setRemainingCharacters(newRemaining);
 
       setShowCorrectImage(true);
-      setTimeout(() => setShowCorrectImage(false), 1000);
+      setTimeout(() => setShowCorrectImage(false), 1200); // Slightly longer display
 
       setTimeout(() => {
-        generateNewQuestion(newRemaining); // Pass the updated pool
-      }, 1000); // Generate next question after feedback
+        generateNewQuestion(newRemaining);
+      }, 1200); // Generate next question after feedback fades
 
     } else {
       setShowIncorrectImage(true);
@@ -254,33 +233,31 @@ const HiraganaLearningPage = () => {
 
       setTimeout(() => {
         setShowIncorrectImage(false);
-        // Keep the same character, but clear the input
-         setAnswer("");
-         // Optional: Shuffle and pick a new one from the current remaining pool if you don't want them to retry the same one immediately
-         // generateNewQuestion(remainingCharacters);
-      }, 2000); // Show correction for longer
+        setAnswer(""); // Clear input on incorrect
+      }, 2000);
     }
   };
 
   // --- Navigation Handlers (Learning Mode) ---
   const handleNextLearning = () => {
       if (!learningSet || learningSet.length === 0) return;
-      const nextIndex = (currentLearningIndex + 1) % learningSet.length; // Loop back to start
+      const nextIndex = (currentLearningIndex + 1) % learningSet.length;
       setCurrentLearningIndex(nextIndex);
       setCurrentCharacter(learningSet[nextIndex]);
   };
 
   const handlePreviousLearning = () => {
       if (!learningSet || learningSet.length === 0) return;
-      const prevIndex = (currentLearningIndex - 1 + learningSet.length) % learningSet.length; // Loop back to end
+      const prevIndex = (currentLearningIndex - 1 + learningSet.length) % learningSet.length;
       setCurrentLearningIndex(prevIndex);
       setCurrentCharacter(learningSet[prevIndex]);
   };
 
-
   // --- Other Handlers ---
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && answer && gameState === 'playing') handleAnswerSubmit();
+    if (e.key === "Enter" && answer && gameState === 'playing' && !showCorrectImage && !showIncorrectImage) {
+        handleAnswerSubmit();
+    }
   };
 
   const handleReset = () => {
@@ -295,98 +272,99 @@ const HiraganaLearningPage = () => {
     setShowCorrectAnswer("");
     setScore(0);
     setTotalQuestions(0);
-    // Reset learning state too
     setLearningSet([]);
     setCurrentLearningIndex(0);
+    setShowCorrectImage(false); // Ensure feedback images are hidden on reset
+    setShowIncorrectImage(false);
   };
-
 
   // --- Render Logic ---
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gradient-to-br from-blue-50 to-indigo-100 relative overflow-hidden">
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-neutral-900 dark:to-indigo-900 relative overflow-hidden">
       {/* Header Image */}
       <div className="w-full max-w-2xl mb-6 z-10">
         <Image
-          src="/hiragana.svg" // Make sure this path is correct in your /public folder
+          src="/hiragana.svg" // Ensure path is correct
           alt="Hiragana Adventure"
           width={800}
           height={200}
           priority
-          className="rounded-lg shadow-lg object-contain" // Use object-contain if aspect ratio is important
+          className="rounded-lg shadow-lg object-contain"
         />
       </div>
 
-      {/* Feedback Images (Positioned more centrally, maybe slightly offset) */}
+      {/* Feedback Images (Positioned to the side - Fixed) */}
       <AnimatePresence>
         {showCorrectImage && (
           <motion.div
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20" // Center it
-             initial={{ scale: 0.5, opacity: 0, y: 50 }}
-             animate={{ scale: 1, opacity: 1, y: 0 }}
-             exit={{ scale: 0.5, opacity: 0, y: -50 }}
-             transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className="fixed top-8 right-8 z-50" // Positioned top-right
+            initial={{ scale: 0.5, opacity: 0, x: 100 }}
+            animate={{ scale: 1, opacity: 1, x: 0 }}
+            exit={{ scale: 0.5, opacity: 0, x: 100 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
           >
             <Image
               src="/sample1.jpg" // Ensure path is correct
               alt="Correct answer"
-              width={150}
-              height={150}
+              width={120}
+              height={120}
               priority
-              className="rounded-full shadow-2xl border-4 border-green-400" // Style update
+              className="rounded-full shadow-2xl border-4 border-green-400 bg-white" // Added bg-white
             />
           </motion.div>
         )}
         {showIncorrectImage && (
           <motion.div
-             className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20" // Center it
-             initial={{ scale: 0.5, opacity: 0, rotate: -10 }}
-             animate={{ scale: 1, opacity: 1, rotate: 0 }}
-             exit={{ scale: 0.5, opacity: 0, rotate: 10 }}
-             transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className="fixed top-8 right-8 z-50" // Positioned top-right
+            initial={{ scale: 0.5, opacity: 0, x: 100 }}
+            animate={{ scale: 1, opacity: 1, x: 0 }}
+            exit={{ scale: 0.5, opacity: 0, x: 100 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
           >
             <Image
               src="/sample2.jpg" // Ensure path is correct
               alt="Incorrect answer"
-              width={150}
-              height={150}
+              width={120}
+              height={120}
               priority
-              className="rounded-full shadow-2xl border-4 border-red-400" // Style update
+              className="rounded-full shadow-2xl border-4 border-red-400 bg-white" // Added bg-white
             />
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* Main Content Card */}
-      <Card className="w-full max-w-lg bg-white/90 backdrop-blur-sm shadow-xl z-10"> {/* Increased max-width */}
+      <Card className="w-full max-w-lg bg-white/90 dark:bg-neutral-800/90 backdrop-blur-sm shadow-xl z-10">
         <CardContent className="p-6 md:p-8">
 
           {/* --- Welcome State --- */}
           {gameState === "welcome" && (
             <div className="space-y-6 text-center">
-              <h2 className="text-3xl font-bold text-indigo-600">Hiragana Adventure</h2>
-              <p className="text-gray-500">Enter your name and choose a mode!</p>
+              <h2 className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">Hiragana Adventure</h2>
+              <p className="text-gray-500 dark:text-gray-400">Enter your name and choose a mode!</p>
               <Input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Your Name"
-                className="text-center text-lg bg-white text-gray-700 border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500"
+                className="text-center text-lg bg-white dark:bg-neutral-700 text-gray-700 dark:text-neutral-100 border-indigo-300 dark:border-indigo-700 focus:border-indigo-500 focus:ring-indigo-500"
               />
 
               <div className="space-y-4 pt-4">
-                <h3 className="text-xl font-semibold text-gray-700">Select Hiragana Set</h3>
+                <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">Select Hiragana Set</h3>
                 {/* Grid for Rows */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {(Object.keys(hiraganaRows) as Array<keyof typeof hiraganaRows>).map((row) => (
                     <div key={row} className="flex flex-col space-y-1">
-                       <span className="text-sm font-medium text-gray-600 self-start pl-1">{row.toUpperCase()} Row</span>
+                       <span className="text-sm font-medium text-gray-600 dark:text-gray-400 self-start pl-1">{row.toUpperCase()} Row</span>
                        <div className="flex space-x-1">
                             <Button
                                 onClick={() => startLearning('row', row)}
                                 disabled={!name}
                                 size="sm"
                                 variant="outline"
-                                className="flex-1 text-blue-600 border-blue-300 hover:bg-blue-50"
+                                // Subtle blue hint for "Learn"
+                                className="flex-1 text-blue-700 border-blue-300 hover:bg-blue-50 dark:text-blue-400 dark:border-blue-700 dark:hover:bg-blue-900/50"
                                 >
                                 Learn
                             </Button>
@@ -395,7 +373,8 @@ const HiraganaLearningPage = () => {
                                 disabled={!name}
                                 size="sm"
                                 variant="outline"
-                                className={`flex-1 text-indigo-600 border-indigo-300 hover:bg-indigo-50 ${completedRows.includes(row) ? 'bg-green-100 hover:bg-green-200 border-green-400 text-green-700' : ''}`}
+                                // Refined outline + completed state styling
+                                className={`flex-1 ${completedRows.includes(row) ? 'bg-green-100 hover:bg-green-200 border-green-400 text-green-700 dark:bg-green-900/50 dark:text-green-300 dark:border-green-700' : 'text-neutral-800 dark:text-neutral-200'}`}
                                 >
                                 Quiz {completedRows.includes(row) ? '✓' : ''}
                             </Button>
@@ -408,13 +387,13 @@ const HiraganaLearningPage = () => {
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-4">
                     {/* All Hiragana */}
                     <div className="flex flex-col space-y-1">
-                       <span className="text-sm font-medium text-gray-600 self-start pl-1">All Hiragana</span>
+                       <span className="text-sm font-medium text-gray-600 dark:text-gray-400 self-start pl-1">All Hiragana</span>
                        <div className="flex space-x-1">
                              <Button
                                 onClick={() => startLearning('all')}
                                 disabled={!name}
                                 variant="outline"
-                                className="flex-1 text-blue-600 border-blue-300 hover:bg-blue-50"
+                                className="flex-1 text-blue-700 border-blue-300 hover:bg-blue-50 dark:text-blue-400 dark:border-blue-700 dark:hover:bg-blue-900/50"
                                 >
                                 Learn All
                             </Button>
@@ -422,7 +401,7 @@ const HiraganaLearningPage = () => {
                                 onClick={() => startQuiz('all')}
                                 disabled={!name}
                                 variant="outline"
-                                className={`flex-1 text-indigo-600 border-indigo-300 hover:bg-indigo-50 ${completedRows.includes('all') ? 'bg-green-100 hover:bg-green-200 border-green-400 text-green-700' : ''}`}
+                                className={`flex-1 ${completedRows.includes('all') ? 'bg-green-100 hover:bg-green-200 border-green-400 text-green-700 dark:bg-green-900/50 dark:text-green-300 dark:border-green-700' : 'text-neutral-800 dark:text-neutral-200'}`}
                                 >
                                 Quiz All {completedRows.includes('all') ? '✓' : ''}
                             </Button>
@@ -431,13 +410,13 @@ const HiraganaLearningPage = () => {
 
                      {/* Frequent Words */}
                     <div className="flex flex-col space-y-1">
-                       <span className="text-sm font-medium text-gray-600 self-start pl-1">Frequent Words</span>
+                       <span className="text-sm font-medium text-gray-600 dark:text-gray-400 self-start pl-1">Frequent Words</span>
                        <div className="flex space-x-1">
                             <Button
                                 onClick={() => startLearning('frequent')}
                                 disabled={!name}
                                 variant="outline"
-                                className="flex-1 text-blue-600 border-blue-300 hover:bg-blue-50"
+                                className="flex-1 text-blue-700 border-blue-300 hover:bg-blue-50 dark:text-blue-400 dark:border-blue-700 dark:hover:bg-blue-900/50"
                                 >
                                 Learn Words
                             </Button>
@@ -445,7 +424,7 @@ const HiraganaLearningPage = () => {
                                 onClick={() => startQuiz('frequent')}
                                 disabled={!name}
                                 variant="outline"
-                                className={`flex-1 text-indigo-600 border-indigo-300 hover:bg-indigo-50 ${completedRows.includes('frequent') ? 'bg-green-100 hover:bg-green-200 border-green-400 text-green-700' : ''}`}
+                                className={`flex-1 ${completedRows.includes('frequent') ? 'bg-green-100 hover:bg-green-200 border-green-400 text-green-700 dark:bg-green-900/50 dark:text-green-300 dark:border-green-700' : 'text-neutral-800 dark:text-neutral-200'}`}
                                 >
                                 Quiz Words {completedRows.includes('frequent') ? '✓' : ''}
                             </Button>
@@ -459,20 +438,20 @@ const HiraganaLearningPage = () => {
           {/* --- Playing State (Quiz Mode) --- */}
           {gameState === "playing" && currentCharacter && (
             <div className="text-center space-y-6">
-               <div className="flex justify-between items-baseline">
-                   <h2 className="text-2xl font-bold text-indigo-600">Quiz Time, {name}!</h2>
-                    <Button variant="outline" size="sm" onClick={handleReset} className="text-gray-600">
+               <div className="flex justify-between items-center"> {/* Changed items-baseline to items-center */}
+                   <h2 className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">Quiz Time, {name}!</h2>
+                    {/* Use Ghost variant for Menu button */}
+                    <Button variant="ghost" size="sm" onClick={handleReset} className="text-neutral-600 dark:text-neutral-400">
                         Menu
                     </Button>
                </div>
-              <div className="text-lg text-gray-600">Score: {score} / {totalQuestions}</div>
-              {/* Progress Bar (Optional but nice) */}
-               <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                <div className="bg-indigo-500 h-2.5 rounded-full" style={{ width: `${totalQuestions > 0 ? (score / totalQuestions) * 100 : 0}%` }}></div>
+              <div className="text-lg text-gray-600 dark:text-gray-400">Score: {score} / {totalQuestions}</div>
+              {/* Progress Bar */}
+               <div className="w-full bg-gray-200 dark:bg-neutral-700 rounded-full h-2.5">
+                <div className="bg-indigo-500 h-2.5 rounded-full transition-all duration-300 ease-out" style={{ width: `${totalQuestions > 0 ? (score / totalQuestions) * 100 : 0}%` }}></div>
                 </div>
-              {/* <div className="text-sm text-gray-500">Characters remaining: {remainingCharacters.length}</div> */}
 
-              <p className="text-7xl md:text-8xl font-bold text-gray-800 my-4 p-4 bg-indigo-50 rounded-lg">
+              <p className="text-7xl md:text-8xl font-bold text-gray-800 dark:text-gray-100 my-4 p-4 bg-indigo-50 dark:bg-neutral-700/50 rounded-lg">
                 {currentCharacter.character}
               </p>
               <Input
@@ -481,78 +460,75 @@ const HiraganaLearningPage = () => {
                 onChange={(e) => setAnswer(e.target.value)}
                 onKeyDown={handleKeyPress}
                 placeholder="Type the romanji"
-                className="text-center text-2xl bg-white text-gray-700 border-indigo-300 focus:border-indigo-500 focus:ring-indigo-500 mb-4"
+                className="text-center text-2xl bg-white dark:bg-neutral-700 text-gray-700 dark:text-neutral-100 border-indigo-300 dark:border-indigo-700 focus:border-indigo-500 focus:ring-indigo-500 mb-4"
                 autoFocus
                 autoComplete="off"
                 autoCapitalize="none"
                 spellCheck="false"
+                disabled={showCorrectImage || showIncorrectImage} // Disable input during feedback
               />
               {showCorrectAnswer && (
                 <motion.div
                     initial={{ y: -10, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    className="text-red-600 font-semibold text-lg mb-4 p-2 bg-red-100 rounded" // Style update
+                    className="text-red-600 dark:text-red-400 font-semibold text-lg mb-4 p-2 bg-red-100 dark:bg-red-900/30 rounded"
                     >
                   Correct answer: {showCorrectAnswer}
                 </motion.div>
               )}
+              {/* Use Default variant (primary color) and size lg for Check Answer */}
               <Button
                 onClick={handleAnswerSubmit}
-                disabled={!answer || showIncorrectImage || showCorrectImage} // Disable while feedback shows
-                className="w-full text-lg font-bold bg-indigo-600 hover:bg-indigo-700 text-white"
+                disabled={!answer || showIncorrectImage || showCorrectImage}
+                className="w-full font-bold" // Primary color text usually white, handled by variant
+                variant="default"
                 size="lg"
               >
                 Check Answer
               </Button>
-              {/* <Button onClick={handleReset} variant="link" className="text-gray-500 mt-2">
-                 Return to Menu
-               </Button> */}
             </div>
           )}
 
           {/* --- Learning State --- */}
           {gameState === "learning" && currentCharacter && (
               <div className="text-center space-y-6">
-                 <div className="flex justify-between items-baseline">
-                    <h2 className="text-2xl font-bold text-blue-600">Learning Mode</h2>
-                    <Button variant="outline" size="sm" onClick={handleReset} className="text-gray-600">
+                 <div className="flex justify-between items-center">
+                    <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-400">Learning Mode</h2>
+                    {/* Use Ghost variant for Menu button */}
+                    <Button variant="ghost" size="sm" onClick={handleReset} className="text-neutral-600 dark:text-neutral-400">
                         Menu
                     </Button>
                 </div>
-                 <div className="text-gray-500">
+                 <div className="text-gray-500 dark:text-gray-400">
                     Set: {selectedRowKey ? selectedRowKey.toUpperCase() : 'Unknown'} ({currentLearningIndex + 1} / {learningSet.length})
                  </div>
 
-                <div className="p-8 bg-blue-50 rounded-lg shadow-inner">
-                     <p className="text-7xl md:text-8xl font-bold text-gray-800 mb-2">
+                <div className="p-8 bg-blue-50 dark:bg-neutral-700/50 rounded-lg shadow-inner">
+                     <p className="text-7xl md:text-8xl font-bold text-gray-800 dark:text-gray-100 mb-2">
                         {currentCharacter.character}
                     </p>
-                    <p className="text-3xl md:text-4xl font-semibold text-blue-700">
+                    <p className="text-3xl md:text-4xl font-semibold text-blue-700 dark:text-blue-300">
                         {currentCharacter.romanji}
                     </p>
                 </div>
 
+                {/* Use Outline variant and size lg for Prev/Next */}
                 <div className="flex justify-center space-x-4 pt-4">
                     <Button
                         onClick={handlePreviousLearning}
                         variant="outline"
-                        className="text-lg text-blue-600 border-blue-400 hover:bg-blue-100"
                         size="lg"
                     >
                         &larr; Previous
                     </Button>
                      <Button
                         onClick={handleNextLearning}
-                         variant="outline"
-                        className="text-lg text-blue-600 border-blue-400 hover:bg-blue-100"
+                        variant="outline"
                         size="lg"
                     >
                         Next &rarr;
                     </Button>
                 </div>
-                 {/* <Button onClick={handleReset} variant="link" className="text-gray-500 mt-4">
-                    Return to Menu
-                </Button> */}
               </div>
           )}
 
@@ -564,23 +540,25 @@ const HiraganaLearningPage = () => {
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.2, type: 'spring' }}
-                className="text-4xl font-bold text-green-600"
+                className="text-4xl font-bold text-green-600 dark:text-green-400"
               >
                 🎉 Well Done, {name}! 🎉
               </motion.h2>
-              <p className="text-xl text-gray-700">
-                You completed the &apos;{selectedRowKey?.toUpperCase()}&apos; set!
+              <p className="text-xl text-gray-700 dark:text-gray-300">
+                 {/* Fixed ESLint error here */}
+                 You completed the &apos;{selectedRowKey?.toUpperCase()}&apos; set!
               </p>
-              {/* Display score only if it was a quiz */}
               {totalQuestions > 0 && (
-                  <div className="text-lg text-gray-600 mb-6">
+                  <div className="text-lg text-gray-600 dark:text-gray-400 mb-6">
                   Final Score: {score} / {totalQuestions}
                   </div>
               )}
 
+              {/* Use Secondary variant and size lg for Return to Menu */}
               <Button
                 onClick={handleReset}
-                className="text-lg font-bold bg-indigo-600 hover:bg-indigo-700 text-white"
+                variant="secondary" // Changed from default for less emphasis
+                className="font-bold"
                 size="lg"
               >
                 Return to Menu
@@ -591,10 +569,11 @@ const HiraganaLearningPage = () => {
         </CardContent>
       </Card>
 
-      {/* Optional: Add some subtle background shapes/elements */}
-       <div className="absolute top-10 -left-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-blob"></div>
-        <div className="absolute bottom-10 -right-10 w-72 h-72 bg-indigo-200 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-blob animation-delay-2000"></div>
-         <div className="absolute bottom-20 left-20 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-blob animation-delay-4000"></div>
+      {/* Optional Background Blobs */}
+      {/* Add the blob CSS to globals.css if you use these */}
+       {/* <div className="absolute top-10 -left-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 dark:opacity-20 animate-blob"></div>
+        <div className="absolute bottom-10 -right-10 w-72 h-72 bg-indigo-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 dark:opacity-20 animate-blob animation-delay-2000"></div>
+         <div className="absolute bottom-20 left-20 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 dark:opacity-20 animate-blob animation-delay-4000"></div> */}
 
     </div>
   );
@@ -602,32 +581,15 @@ const HiraganaLearningPage = () => {
 
 export default HiraganaLearningPage;
 
-// Add this to your globals.css or a style block if needed for animations
+// Add this to your globals.css if using the background blobs:
 /*
 @keyframes blob {
-  0% {
-    transform: translate(0px, 0px) scale(1);
-  }
-  33% {
-    transform: translate(30px, -50px) scale(1.1);
-  }
-  66% {
-    transform: translate(-20px, 20px) scale(0.9);
-  }
-  100% {
-    transform: translate(0px, 0px) scale(1);
-  }
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
 }
-
-.animate-blob {
-  animation: blob 7s infinite;
-}
-
-.animation-delay-2000 {
-  animation-delay: 2s;
-}
-
-.animation-delay-4000 {
-  animation-delay: 4s;
-}
+.animate-blob { animation: blob 7s infinite; }
+.animation-delay-2000 { animation-delay: 2s; }
+.animation-delay-4000 { animation-delay: 4s; }
 */
