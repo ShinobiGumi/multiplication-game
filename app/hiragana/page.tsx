@@ -1,7 +1,7 @@
 // app/hiragana/page.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button"; // Assuming components/ui/button.tsx is updated as per previous instructions
@@ -74,6 +74,9 @@ const HiraganaLearningPage = () => {
   // --- State for Learning Mode ---
   const [learningSet, setLearningSet] = useState<HiraganaCharacter[]>([]);
   const [currentLearningIndex, setCurrentLearningIndex] = useState<number>(0);
+  
+  // Add input ref for focus management
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Memoize total unique characters
   const getTotalUniqueCharacters = React.useMemo(() => {
@@ -160,6 +163,11 @@ const HiraganaLearningPage = () => {
     setCurrentCharacter(selectedCharacter);
     setAnswer("");
     setShowCorrectAnswer("");
+    
+    // Focus the input after a slight delay to ensure state updates are complete
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 50);
   };
 
   // --- Event Handlers for Welcome Screen ---
@@ -234,6 +242,8 @@ const HiraganaLearningPage = () => {
       setTimeout(() => {
         setShowIncorrectImage(false);
         setAnswer(""); // Clear input on incorrect
+        // Focus the input after showing incorrect answer feedback
+        inputRef.current?.focus();
       }, 2000);
     }
   };
@@ -455,6 +465,7 @@ const HiraganaLearningPage = () => {
                 {currentCharacter.character}
               </p>
               <Input
+                ref={inputRef}
                 type="text"
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
