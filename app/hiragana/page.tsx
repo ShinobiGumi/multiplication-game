@@ -211,42 +211,57 @@ const HiraganaLearningPage = () => {
       }
   }
 
-  // --- Answer Submission (Quiz Mode) ---
-  const handleAnswerSubmit = () => {
-    if (!currentCharacter || gameState !== 'playing') return;
+ // --- Answer Submission (Quiz Mode) ---
+ const handleAnswerSubmit = () => {
+  if (!currentCharacter || gameState !== 'playing') return;
 
-    const isCorrect = answer.trim().toLowerCase() === currentCharacter.romanji.toLowerCase();
+  // Disable check while feedback is potentially showing from a previous quick attempt
+  if (showCorrectImage || showIncorrectImage) return; 
 
-    if (isCorrect) {
-      const newCorrectlyAnswered = new Set(correctlyAnsweredCharacters).add(currentCharacter.character);
-      setCorrectlyAnsweredCharacters(newCorrectlyAnswered);
-      const newScore = newCorrectlyAnswered.size;
-      setScore(newScore);
+  const isCorrect = answer.trim().toLowerCase() === currentCharacter.romanji.toLowerCase();
 
-      const newRemaining = remainingCharacters.filter(
-        char => char.character !== currentCharacter.character
-      );
-      setRemainingCharacters(newRemaining);
+  if (isCorrect) {
+    // --- Correct Answer Logic (Remains the same) ---
+    const newCorrectlyAnswered = new Set(correctlyAnsweredCharacters).add(currentCharacter.character);
+    setCorrectlyAnsweredCharacters(newCorrectlyAnswered);
+    const newScore = newCorrectlyAnswered.size;
+    setScore(newScore);
 
-      setShowCorrectImage(true);
-      setTimeout(() => setShowCorrectImage(false), 1200); // Slightly longer display
+    const newRemaining = remainingCharacters.filter(
+      char => char.character !== currentCharacter.character
+    );
+    setRemainingCharacters(newRemaining); // Remove correct char from pool
 
-      setTimeout(() => {
-        generateNewQuestion(newRemaining);
-      }, 1200); // Generate next question after feedback fades
+    setShowCorrectImage(true);
+    setTimeout(() => setShowCorrectImage(false), 1200);
 
-    } else {
-      setShowIncorrectImage(true);
-      setShowCorrectAnswer(currentCharacter.romanji);
+    setTimeout(() => {
+      // Generate next question from the *smaller* pool
+      generateNewQuestion(newRemaining); 
+    }, 1200);
+    // --- End Correct Answer Logic ---
 
-      setTimeout(() => {
-        setShowIncorrectImage(false);
-        setAnswer(""); // Clear input on incorrect
-        // Focus the input after showing incorrect answer feedback
-        inputRef.current?.focus();
-      }, 2000);
-    }
-  };
+  } else {
+    // --- Incorrect Answer Logic (Updated) ---
+    setShowIncorrectImage(true);
+    setShowCorrectAnswer(currentCharacter.romanji);
+
+    setTimeout(() => {
+      setShowIncorrectImage(false);
+      setAnswer(""); // Clear input
+
+      // *** CHANGE IS HERE ***
+      // Generate a new question from the *current* remaining pool
+      // This pool still contains the incorrectly answered character.
+      generateNewQuestion(remainingCharacters);
+
+      // Note: Focusing the input is now handled within generateNewQuestion's timeout
+      // inputRef.current?.focus(); // Can be removed from here
+
+    }, 2000); // Show feedback for 2 seconds
+    // --- End Incorrect Answer Logic ---
+  }
+};
 
   // --- Navigation Handlers (Learning Mode) ---
   const handleNextLearning = () => {
