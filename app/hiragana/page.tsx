@@ -10,48 +10,48 @@ import Image from "next/image";
 
 interface HiraganaCharacter {
   character: string;
-  romanji: string;
+  romaji: string;
 }
 
 // --- Hiragana Data (Keep as is) ---
 const hiraganaRows = {
   a: [
-    { character: 'あ', romanji: 'a' }, { character: 'い', romanji: 'i' }, { character: 'う', romanji: 'u' }, { character: 'え', romanji: 'e' }, { character: 'お', romanji: 'o' },
+    { character: 'あ', romaji: 'a' }, { character: 'い', romaji: 'i' }, { character: 'う', romaji: 'u' }, { character: 'え', romaji: 'e' }, { character: 'お', romaji: 'o' },
   ],
   ka: [
-    { character: 'か', romanji: 'ka' }, { character: 'き', romanji: 'ki' }, { character: 'く', romanji: 'ku' }, { character: 'け', romanji: 'ke' }, { character: 'こ', romanji: 'ko' },
+    { character: 'か', romaji: 'ka' }, { character: 'き', romaji: 'ki' }, { character: 'く', romaji: 'ku' }, { character: 'け', romaji: 'ke' }, { character: 'こ', romaji: 'ko' },
   ],
   sa: [
-    { character: 'さ', romanji: 'sa' }, { character: 'し', romanji: 'shi' }, { character: 'す', romanji: 'su' }, { character: 'せ', romanji: 'se' }, { character: 'そ', romanji: 'so' },
+    { character: 'さ', romaji: 'sa' }, { character: 'し', romaji: 'shi' }, { character: 'す', romaji: 'su' }, { character: 'せ', romaji: 'se' }, { character: 'そ', romaji: 'so' },
   ],
   ta: [
-    { character: 'た', romanji: 'ta' }, { character: 'ち', romanji: 'chi' }, { character: 'つ', romanji: 'tsu' }, { character: 'て', romanji: 'te' }, { character: 'と', romanji: 'to' },
+    { character: 'た', romaji: 'ta' }, { character: 'ち', romaji: 'chi' }, { character: 'つ', romaji: 'tsu' }, { character: 'て', romaji: 'te' }, { character: 'と', romaji: 'to' },
   ],
   na: [
-    { character: 'な', romanji: 'na' }, { character: 'に', romanji: 'ni' }, { character: 'ぬ', romanji: 'nu' }, { character: 'ね', romanji: 'ne' }, { character: 'の', romanji: 'no' },
+    { character: 'な', romaji: 'na' }, { character: 'に', romaji: 'ni' }, { character: 'ぬ', romaji: 'nu' }, { character: 'ね', romaji: 'ne' }, { character: 'の', romaji: 'no' },
   ],
   ha: [
-    { character: 'は', romanji: 'ha' }, { character: 'ひ', romanji: 'hi' }, { character: 'ふ', romanji: 'fu' }, { character: 'へ', romanji: 'he' }, { character: 'ほ', romanji: 'ho' },
+    { character: 'は', romaji: 'ha' }, { character: 'ひ', romaji: 'hi' }, { character: 'ふ', romaji: 'fu' }, { character: 'へ', romaji: 'he' }, { character: 'ほ', romaji: 'ho' },
   ],
   ma: [
-    { character: 'ま', romanji: 'ma' }, { character: 'み', romanji: 'mi' }, { character: 'む', romanji: 'mu' }, { character: 'め', romanji: 'me' }, { character: 'も', romanji: 'mo' },
+    { character: 'ま', romaji: 'ma' }, { character: 'み', romaji: 'mi' }, { character: 'む', romaji: 'mu' }, { character: 'め', romaji: 'me' }, { character: 'も', romaji: 'mo' },
   ],
   ya: [
-    { character: 'や', romanji: 'ya' }, { character: 'ゆ', romanji: 'yu' }, { character: 'よ', romanji: 'yo' },
+    { character: 'や', romaji: 'ya' }, { character: 'ゆ', romaji: 'yu' }, { character: 'よ', romaji: 'yo' },
   ],
   ra: [
-    { character: 'ら', romanji: 'ra' }, { character: 'り', romanji: 'ri' }, { character: 'る', romanji: 'ru' }, { character: 'れ', romanji: 're' }, { character: 'ろ', romanji: 'ro' },
+    { character: 'ら', romaji: 'ra' }, { character: 'り', romaji: 'ri' }, { character: 'る', romaji: 'ru' }, { character: 'れ', romaji: 're' }, { character: 'ろ', romaji: 'ro' },
   ],
   wa: [
-    { character: 'わ', romanji: 'wa' }, { character: 'を', romanji: 'wo' },
+    { character: 'わ', romaji: 'wa' }, { character: 'を', romaji: 'wo' },
   ],
   special: [
-    { character: 'ん', romanji: 'n' },
+    { character: 'ん', romaji: 'n' },
   ]
 };
 
 const mostFrequentWords: HiraganaCharacter[] = [
-  { character: 'これ', romanji: 'kore' }, { character: 'それ', romanji: 'sore' }, { character: 'あれ', romanji: 'are' }, { character: 'です', romanji: 'desu' }, { character: 'ます', romanji: 'masu' }, { character: 'は', romanji: 'wa' }, { character: 'が', romanji: 'ga' }, { character: 'の', romanji: 'no' }, { character: 'に', romanji: 'ni' }, { character: 'を', romanji: 'wo' },
+  { character: 'これ', romaji: 'kore' }, { character: 'それ', romaji: 'sore' }, { character: 'あれ', romaji: 'are' }, { character: 'です', romaji: 'desu' }, { character: 'ます', romaji: 'masu' }, { character: 'ぼく', romaji: 'boku' }, { character: 'ようこ', romaji: 'youko' }, { character: 'かるろ', romaji: 'karuro' }, { character: 'るい', romaji: 'rui' }, { character: 'みず', romaji: 'mizu' } , { character: 'ねこ', romaji: 'neko' }, { character: 'いぬ', romaji: 'inu' }, { character: 'たべる', romaji: 'taberu' }, { character: 'のむ', romaji: 'nomu' }
 ];
 // --- End Hiragana Data ---
 
@@ -218,7 +218,7 @@ const HiraganaLearningPage = () => {
   // Disable check while feedback is potentially showing from a previous quick attempt
   if (showCorrectImage || showIncorrectImage) return; 
 
-  const isCorrect = answer.trim().toLowerCase() === currentCharacter.romanji.toLowerCase();
+  const isCorrect = answer.trim().toLowerCase() === currentCharacter.romaji.toLowerCase();
 
   if (isCorrect) {
     // --- Correct Answer Logic (Remains the same) ---
@@ -244,7 +244,7 @@ const HiraganaLearningPage = () => {
   } else {
     // --- Incorrect Answer Logic (Updated) ---
     setShowIncorrectImage(true);
-    setShowCorrectAnswer(currentCharacter.romanji);
+    setShowCorrectAnswer(currentCharacter.romaji);
 
     setTimeout(() => {
       setShowIncorrectImage(false);
@@ -485,7 +485,7 @@ const HiraganaLearningPage = () => {
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
                 onKeyDown={handleKeyPress}
-                placeholder="Type the romanji"
+                placeholder="Type the romaji"
                 className="text-center text-2xl bg-white dark:bg-neutral-700 text-gray-700 dark:text-neutral-100 border-indigo-300 dark:border-indigo-700 focus:border-indigo-500 focus:ring-indigo-500 mb-4"
                 autoFocus
                 autoComplete="off"
@@ -534,7 +534,7 @@ const HiraganaLearningPage = () => {
                         {currentCharacter.character}
                     </p>
                     <p className="text-3xl md:text-4xl font-semibold text-blue-700 dark:text-blue-300">
-                        {currentCharacter.romanji}
+                        {currentCharacter.romaji}
                     </p>
                 </div>
 
