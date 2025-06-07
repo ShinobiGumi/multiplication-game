@@ -21,7 +21,7 @@ const katakanaRows = {
   ka: [
     { character: 'カ', romaji: 'ka' }, { character: 'キ', romaji: 'ki' }, { character: 'ク', romaji: 'ku' }, { character: 'ケ', romaji: 'ke' }, { character: 'コ', romaji: 'ko' },
   ],
-  # Add remaining katakana rows as necessary
+  // Add remaining katakana rows as necessary
 };
  {
   a: [
