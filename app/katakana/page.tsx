@@ -612,7 +612,7 @@ const KatakanaLearningPage = () => {
                 );
               };
               
-              export default HiraganaLearningPage;
+              export default KatakanaLearningPage;
               
               // Add this to your globals.css if using the background blobs:
               /*
